@@ -8,7 +8,6 @@
     x:DataType="vm:MainPageViewModel"
     BackgroundColor="#F5F0E8">
 
-    <!--  Local styles for this page  -->
     <ContentPage.Resources>
         <ResourceDictionary>
             <Style x:Key="AssignmentCard" TargetType="Border">
@@ -29,10 +28,7 @@
             Grid.Row="0"
             Padding="20,50,20,20"
             BackgroundColor="#1B2A4A">
-
             <Grid ColumnDefinitions="*,Auto">
-
-                <!--  Title and subtitle  -->
                 <VerticalStackLayout>
                     <Label
                         Text="StudyFlow"
@@ -47,7 +43,6 @@
                         FontFamily="OpenSansRegular" />
                 </VerticalStackLayout>
 
-                <!--  Average Score Badge  -->
                 <Border
                     Grid.Column="1"
                     Padding="12,8"
@@ -71,7 +66,6 @@
                             FontFamily="OpenSansSemibold" />
                     </VerticalStackLayout>
                 </Border>
-
             </Grid>
         </Grid>
 
@@ -88,12 +82,11 @@
         <!--  Assignments Collection View  -->
         <CollectionView
             Grid.Row="2"
-    ItemsSource="{Binding Assignments}"
-    SelectionMode="Single"
-    SelectedItem="{Binding SelectedAssignment, Mode=TwoWay}"
-    SelectionChangedCommand="{Binding NavigateToDetailCommand}">
+            ItemsSource="{Binding Assignments}"
+            SelectionMode="Single"
+            SelectedItem="{Binding SelectedAssignment, Mode=TwoWay}"
+            SelectionChangedCommand="{Binding NavigateToDetailCommand}">
 
-            <!--  Show this when there are no assignments  -->
             <CollectionView.EmptyView>
                 <VerticalStackLayout
                     HorizontalOptions="Center"
@@ -112,15 +105,13 @@
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
-            <!--  Each assignment card  -->
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CourseAssignment">
                     <Border Style="{StaticResource AssignmentCard}">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
 
                             <!--  Subject badge and deadline  -->
                             <Grid ColumnDefinitions="*,Auto">
-                                <!--  Subject badge  -->
                                 <Border
                                     Padding="8,4"
                                     BackgroundColor="#1B2A4A"
@@ -134,12 +125,12 @@
                                         FontFamily="OpenSansRegular" />
                                 </Border>
 
-                                <!--  Deadline  -->
                                 <Label
                                     Grid.Column="1"
-                                    Text="{Binding Deadline}"
+                                    Text="{Binding DeadlineLabel}"
                                     FontSize="12"
-                                    TextColor="#5C6B8A"
+                                    TextColor="{Binding DeadlineColor}"
+                                    FontAttributes="Bold"
                                     VerticalOptions="Center" />
                             </Grid>
 
@@ -152,9 +143,17 @@
                                 FontFamily="OpenSansSemibold"
                                 TextColor="#1B2A4A" />
 
-                            <!--  Description  -->
+                            <!--  Status Badge  -->
                             <Label
                                 Grid.Row="2"
+                                Text="{Binding StatusLabel}"
+                                FontSize="12"
+                                FontAttributes="Bold"
+                                TextColor="{Binding StatusColor}" />
+
+                            <!--  Description  -->
+                            <Label
+                                Grid.Row="3"
                                 Text="{Binding Description}"
                                 FontSize="13"
                                 TextColor="#5C6B8A"
@@ -163,11 +162,10 @@
 
                             <!--  Progress Bar  -->
                             <Grid
-                                Grid.Row="3"
+                                Grid.Row="4"
                                 RowDefinitions="Auto,Auto"
                                 RowSpacing="4">
 
-                                <!--  Progress label  -->
                                 <Grid ColumnDefinitions="*,Auto">
                                     <Label
                                         Text="Progress"
@@ -181,7 +179,6 @@
                                         TextColor="#1B2A4A" />
                                 </Grid>
 
-                                <!--  Progress bar  -->
                                 <ProgressBar
                                     Grid.Row="1"
                                     Progress="{Binding Progress}"

@@ -109,12 +109,10 @@ namespace StudyFlow.ViewModels
             {
                 var token = await _googleAuthService.SignInAsync();
                 System.Diagnostics.Debug.WriteLine($"Token: {token}");
-
                 if (!string.IsNullOrEmpty(token))
                 {
                     await SecureStorage.Default.SetAsync("google_access_token", token);
 
-                    // קבל פרטי משתמש מ-Google
                     using var client = new HttpClient();
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
@@ -122,13 +120,14 @@ namespace StudyFlow.ViewModels
                     System.Diagnostics.Debug.WriteLine($"UserInfo: {response}");
 
                     var userInfo = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(response);
+                    var googleId = userInfo.GetProperty("id").GetString() ?? string.Empty;
                     var email = userInfo.GetProperty("email").GetString() ?? string.Empty;
                     var firstName = userInfo.GetProperty("given_name").GetString() ?? string.Empty;
                     var lastName = userInfo.GetProperty("family_name").GetString() ?? string.Empty;
 
-                    // חפש משתמש קיים
+                    // חפש משתמש קיים לפי Google ID
                     var allUsers = _dbService.GetAllAsync();
-                    var existingUser = allUsers.FirstOrDefault(u => u.UserEmail == email);
+                    var existingUser = allUsers.FirstOrDefault(u => u.Id == googleId);
 
                     if (existingUser != null)
                     {
@@ -136,22 +135,23 @@ namespace StudyFlow.ViewModels
                     }
                     else
                     {
-                        // צור משתמש חדש
                         var newUser = new StudyFlow.Model.AppUser
                         {
-                            Id = Guid.NewGuid().ToString(),
+                            Id = googleId,
                             FirstName = firstName,
                             LastName = lastName,
                             UserEmail = email,
                             IsAdmin = false,
                             RegDate = DateTime.Now.ToString("dd/MM/yyyy")
                         };
+
                         var firebaseClient = new Firebase.Database.FirebaseClient(
-    "https://studyflowdb-default-rtdb.europe-west1.firebasedatabase.app/");
+                            "https://studyflowdb-default-rtdb.europe-west1.firebasedatabase.app/");
                         await firebaseClient
                             .Child("AppUsers")
                             .Child(newUser.Id)
                             .PutAsync(newUser);
+
                         (App.Current as App)!.CurrentUser = newUser;
                     }
 

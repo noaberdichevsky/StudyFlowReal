@@ -34,7 +34,6 @@ namespace StudyFlow.Service.ClassroomService
 
                 var coursesResponse = await client.GetStringAsync(
                     "https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE");
-                System.Diagnostics.Debug.WriteLine($"Courses response: {coursesResponse}");
 
                 var coursesDoc = JsonDocument.Parse(coursesResponse);
                 if (!coursesDoc.RootElement.TryGetProperty("courses", out var courses))
@@ -55,7 +54,6 @@ namespace StudyFlow.Service.ClassroomService
                     {
                         var worksResponse = await client.GetStringAsync(
                             $"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?courseWorkStates=PUBLISHED");
-                        System.Diagnostics.Debug.WriteLine($"Works response: {worksResponse}");
 
                         var worksDoc = JsonDocument.Parse(worksResponse);
                         if (!worksDoc.RootElement.TryGetProperty("courseWork", out var works))
@@ -74,6 +72,39 @@ namespace StudyFlow.Service.ClassroomService
                                 Score = 0,
                                 Status = 0
                             };
+
+                            // קבל ציון וסטטוס
+                            try
+                            {
+                                var submissionsResponse = await client.GetStringAsync(
+                                    $"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{assignment.Id}/studentSubmissions?userId=me");
+
+                                var submissionsDoc = JsonDocument.Parse(submissionsResponse);
+                                if (submissionsDoc.RootElement.TryGetProperty("studentSubmissions", out var submissions))
+                                {
+                                    var submission = submissions.EnumerateArray().FirstOrDefault();
+                                    if (submission.ValueKind != JsonValueKind.Undefined)
+                                    {
+                                        if (submission.TryGetProperty("assignedGrade", out var grade))
+                                            assignment.Score = grade.GetDouble();
+
+                                        if (submission.TryGetProperty("state", out var state))
+                                        {
+                                            assignment.Status = state.GetString() switch
+                                            {
+                                                "TURNED_IN" => 2,
+                                                "RETURNED" => 3,
+                                                "CREATED" => 0,
+                                                _ => 0
+                                            };
+                                        }
+                                    }
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Submission error: {ex.Message}");
+                            }
 
                             assignment.Subtasks = _subtaskGenerator.GenerateSubtasks(assignment, assignment.Id);
                             assignments.Add(assignment);

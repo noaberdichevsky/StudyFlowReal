@@ -53,5 +53,64 @@ namespace StudyFlow.Model
                 return (double)completed / Subtasks.Count;
             }
         }
+        // Returns color based on deadline proximity
+        public Color DeadlineColor
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Deadline)) return Color.FromArgb("#5C6B8A");
+
+                if (DateTime.TryParseExact(Deadline, "dd/MM/yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var date))
+                {
+                    var daysLeft = (date - DateTime.Today).TotalDays;
+                    if (daysLeft < 0) return Color.FromArgb("#922B21");      // עבר - אדום
+                    if (daysLeft <= 3) return Color.FromArgb("#E67E22");     // קרוב - כתום
+                    return Color.FromArgb("#1B8A4A");                        // בסדר - ירוק
+                }
+                return Color.FromArgb("#5C6B8A");
+            }
+        }
+        public string DeadlineLabel
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(Deadline)) return string.Empty;
+
+                if (DateTime.TryParseExact(Deadline, "dd/MM/yyyy",
+                    System.Globalization.CultureInfo.InvariantCulture,
+                    System.Globalization.DateTimeStyles.None, out var date))
+                {
+                    var daysLeft = (date - DateTime.Today).TotalDays;
+                    if (daysLeft < 0) return $"{Deadline} (overdue)";
+                    if (daysLeft == 0) return $"{Deadline} (today!)";
+                    if (daysLeft == 1) return $"{Deadline} (1 day left)";
+                    return $"{Deadline} ({(int)daysLeft} days left)";
+                }
+                return Deadline;
+            }
+        }
+        public string StatusLabel
+        {
+            get => Status switch
+            {
+                2 => "✓ Submitted",
+                3 => "★ Graded",
+                1 => "In Progress",
+                _ => ""
+            };
+        }
+
+        public Color StatusColor
+        {
+            get => Status switch
+            {
+                2 => Color.FromArgb("#1B8A4A"),
+                3 => Color.FromArgb("#C9A84C"),
+                1 => Color.FromArgb("#5C6B8A"),
+                _ => Colors.Transparent
+            };
+        }
     }
 }
