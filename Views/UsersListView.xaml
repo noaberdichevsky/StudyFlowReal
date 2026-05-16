@@ -33,7 +33,7 @@
                 <DataTemplate x:DataType="models:AppUser">
                     <Border Margin="15,7" Padding="15" BackgroundColor="#FFFFFF"
                             Stroke="#C8C0B0" StrokeShape="RoundRectangle 10" StrokeThickness="1">
-                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto" RowSpacing="8">
 
                             <!--  Name and Delete  -->
                             <Grid ColumnDefinitions="*,Auto">
@@ -60,9 +60,16 @@
                                 </Border>
                             </Grid>
 
+                            <!--  Phone Number  -->
+                            <HorizontalStackLayout Grid.Row="2" Spacing="5">
+                                <Label FontSize="13" Text="📱" VerticalOptions="Center" />
+                                <Label FontSize="13" Text="{Binding UserMobile}"
+                                       TextColor="#5C6B8A" VerticalOptions="Center" />
+                            </HorizontalStackLayout>
+
                             <!--  Make Admin Button  -->
                             <Button
-                                Grid.Row="2"
+                                Grid.Row="3"
                                 BackgroundColor="#C9A84C"
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=MakeAdminCommand}"
                                 CommandParameter="{Binding .}"

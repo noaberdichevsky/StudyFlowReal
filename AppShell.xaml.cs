@@ -12,6 +12,7 @@ namespace StudyFlow
             // Register routes for pages not in the tab bar
             Routing.RegisterRoute("UsersListView", typeof(Views.UsersListView));
             Routing.RegisterRoute("AssignmentDetailView", typeof(Views.AssignmentDetailView));
+            Routing.RegisterRoute("AddAssignmentView", typeof(Views.AddAssignmentView));
 
             // Hide admin tab for regular users
             var currentUser = (App.Current as App)?.CurrentUser;

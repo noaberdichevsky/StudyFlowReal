@@ -20,11 +20,11 @@ namespace StudyFlow.Service.ClassroomService
         {
             try
             {
+                await LocalAssignmentService.LoadFromFirebase();
                 var token = await SecureStorage.Default.GetAsync("google_access_token");
-                System.Diagnostics.Debug.WriteLine($"Token in classroom: {token}");
                 if (string.IsNullOrEmpty(token))
                 {
-                    System.Diagnostics.Debug.WriteLine("No token found!");
+                    _assignments = new List<CourseAssignment>(LocalAssignmentService.GetAll());
                     return;
                 }
 
@@ -38,7 +38,7 @@ namespace StudyFlow.Service.ClassroomService
                 var coursesDoc = JsonDocument.Parse(coursesResponse);
                 if (!coursesDoc.RootElement.TryGetProperty("courses", out var courses))
                 {
-                    System.Diagnostics.Debug.WriteLine("No courses found!");
+                    _assignments = new List<CourseAssignment>(LocalAssignmentService.GetAll());
                     return;
                 }
 
@@ -48,7 +48,6 @@ namespace StudyFlow.Service.ClassroomService
                 {
                     var courseId = course.GetProperty("id").GetString() ?? string.Empty;
                     var courseName = course.GetProperty("name").GetString() ?? string.Empty;
-                    System.Diagnostics.Debug.WriteLine($"Course: {courseName}");
 
                     try
                     {
@@ -73,7 +72,6 @@ namespace StudyFlow.Service.ClassroomService
                                 Status = 0
                             };
 
-                            // קבל ציון וסטטוס
                             try
                             {
                                 var submissionsResponse = await client.GetStringAsync(
@@ -115,6 +113,9 @@ namespace StudyFlow.Service.ClassroomService
                         System.Diagnostics.Debug.WriteLine($"Course {courseId} error: {ex.Message}");
                     }
                 }
+
+                // הוסף מטלות ידניות
+                assignments.AddRange(LocalAssignmentService.GetAll());
 
                 _assignments = assignments;
                 System.Diagnostics.Debug.WriteLine($"Total assignments: {_assignments.Count}");

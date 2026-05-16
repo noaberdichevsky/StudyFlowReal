@@ -130,5 +130,27 @@ namespace StudyFlow.ViewModels
             await Shell.Current.GoToAsync(
                 $"AssignmentDetailView?AssignmentId={SelectedAssignment.Id}");
         }
+        [RelayCommand]
+        private async Task AddAssignment()
+        {
+            await Shell.Current.GoToAsync("AddAssignmentView");
+        }
+        [RelayCommand]
+        private async Task DeleteAssignment(CourseAssignment assignment)
+        {
+            var isLocal = LocalAssignmentService.GetAll().Any(a => a.Id == assignment.Id);
+
+            if (!isLocal)
+            {
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Cannot Delete",
+                    "You can only delete assignments you added manually.",
+                    "OK");
+                return;
+            }
+
+            await LocalAssignmentService.Remove(assignment.Id);
+            Assignments.Remove(assignment);
+        }
     }
 }

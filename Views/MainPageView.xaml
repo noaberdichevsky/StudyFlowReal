@@ -24,168 +24,99 @@
     <Grid RowDefinitions="Auto,Auto,*">
 
         <!--  Header  -->
-        <Grid
-            Grid.Row="0"
-            Padding="20,50,20,20"
-            BackgroundColor="#1B2A4A">
-            <Grid ColumnDefinitions="*,Auto">
+        <Grid Grid.Row="0" Padding="20,50,20,20" BackgroundColor="#1B2A4A">
+            <Grid ColumnDefinitions="*,Auto,Auto">
                 <VerticalStackLayout>
-                    <Label
-                        Text="StudyFlow"
-                        FontSize="26"
-                        FontAttributes="Bold"
-                        FontFamily="OpenSansSemibold"
-                        TextColor="#F5F0E8" />
-                    <Label
-                        Text="Your Assignments"
-                        FontSize="13"
-                        TextColor="#C9A84C"
-                        FontFamily="OpenSansRegular" />
+                    <Label Text="StudyFlow" FontSize="26" FontAttributes="Bold"
+                           FontFamily="OpenSansSemibold" TextColor="#F5F0E8" />
+                    <Label Text="Your Assignments" FontSize="13"
+                           TextColor="#C9A84C" FontFamily="OpenSansRegular" />
                 </VerticalStackLayout>
 
-                <Border
-                    Grid.Column="1"
-                    Padding="12,8"
-                    BackgroundColor="#C9A84C"
-                    StrokeShape="RoundRectangle 20"
-                    Stroke="Transparent"
-                    VerticalOptions="Center">
+                <Button Grid.Column="1" BackgroundColor="Transparent"
+                        Command="{Binding AddAssignmentCommand}"
+                        FontFamily="MaterialIcons" FontSize="28"
+                        Text="&#xe145;" TextColor="#C9A84C" VerticalOptions="Center" />
+
+                <Border Grid.Column="2" Padding="12,8" BackgroundColor="#C9A84C"
+                        StrokeShape="RoundRectangle 20" Stroke="Transparent" VerticalOptions="Center">
                     <VerticalStackLayout>
-                        <Label
-                            Text="Average"
-                            FontSize="10"
-                            TextColor="#1B2A4A"
-                            HorizontalOptions="Center"
-                            FontFamily="OpenSansRegular" />
-                        <Label
-                            Text="{Binding AverageScore, StringFormat='{0:F1}'}"
-                            FontSize="18"
-                            FontAttributes="Bold"
-                            TextColor="#1B2A4A"
-                            HorizontalOptions="Center"
-                            FontFamily="OpenSansSemibold" />
+                        <Label Text="Average" FontSize="10" TextColor="#1B2A4A"
+                               HorizontalOptions="Center" FontFamily="OpenSansRegular" />
+                        <Label Text="{Binding AverageScore, StringFormat='{0:F1}'}"
+                               FontSize="18" FontAttributes="Bold" TextColor="#1B2A4A"
+                               HorizontalOptions="Center" FontFamily="OpenSansSemibold" />
                     </VerticalStackLayout>
                 </Border>
             </Grid>
         </Grid>
 
         <!--  Section Title  -->
-        <Label
-            Grid.Row="1"
-            Text="Current Assignments"
-            FontSize="16"
-            FontAttributes="Bold"
-            FontFamily="OpenSansSemibold"
-            TextColor="#1B2A4A"
-            Margin="20,15,20,5" />
+        <Label Grid.Row="1" Text="Current Assignments" FontSize="16" FontAttributes="Bold"
+               FontFamily="OpenSansSemibold" TextColor="#1B2A4A" Margin="20,15,20,5" />
 
         <!--  Assignments Collection View  -->
-        <CollectionView
-            Grid.Row="2"
-            ItemsSource="{Binding Assignments}"
-            SelectionMode="Single"
-            SelectedItem="{Binding SelectedAssignment, Mode=TwoWay}"
-            SelectionChangedCommand="{Binding NavigateToDetailCommand}">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding Assignments}"
+                        SelectionMode="Single" SelectedItem="{Binding SelectedAssignment, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding NavigateToDetailCommand}">
 
             <CollectionView.EmptyView>
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    Padding="20">
-                    <Label
-                        Text="No assignments yet"
-                        FontSize="18"
-                        TextColor="#5C6B8A"
-                        HorizontalOptions="Center" />
-                    <Label
-                        Text="Your assignments will appear here"
-                        FontSize="14"
-                        TextColor="#5C6B8A"
-                        HorizontalOptions="Center" />
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="20">
+                    <Label Text="No assignments yet" FontSize="18" TextColor="#5C6B8A" HorizontalOptions="Center" />
+                    <Label Text="Your assignments will appear here" FontSize="14" TextColor="#5C6B8A" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:CourseAssignment">
                     <Border Style="{StaticResource AssignmentCard}">
-                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
+                        <Grid RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto" RowSpacing="6">
 
                             <!--  Subject badge and deadline  -->
                             <Grid ColumnDefinitions="*,Auto">
-                                <Border
-                                    Padding="8,4"
-                                    BackgroundColor="#1B2A4A"
-                                    StrokeShape="RoundRectangle 10"
-                                    Stroke="Transparent"
-                                    HorizontalOptions="Start">
-                                    <Label
-                                        Text="{Binding Subject}"
-                                        FontSize="11"
-                                        TextColor="#F5F0E8"
-                                        FontFamily="OpenSansRegular" />
+                                <Border Padding="8,4" BackgroundColor="#1B2A4A"
+                                        StrokeShape="RoundRectangle 10" Stroke="Transparent"
+                                        HorizontalOptions="Start">
+                                    <Label Text="{Binding Subject}" FontSize="11"
+                                           TextColor="#F5F0E8" FontFamily="OpenSansRegular" />
                                 </Border>
-
-                                <Label
-                                    Grid.Column="1"
-                                    Text="{Binding DeadlineLabel}"
-                                    FontSize="12"
-                                    TextColor="{Binding DeadlineColor}"
-                                    FontAttributes="Bold"
-                                    VerticalOptions="Center" />
+                                <Label Grid.Column="1" Text="{Binding DeadlineLabel}"
+                                       FontSize="12" TextColor="{Binding DeadlineColor}"
+                                       FontAttributes="Bold" VerticalOptions="Center" />
                             </Grid>
 
-                            <!--  Assignment Title  -->
-                            <Label
-                                Grid.Row="1"
-                                Text="{Binding Title}"
-                                FontSize="16"
-                                FontAttributes="Bold"
-                                FontFamily="OpenSansSemibold"
-                                TextColor="#1B2A4A" />
+                            <Label Grid.Row="1" Text="{Binding Title}" FontSize="16"
+                                   FontAttributes="Bold" FontFamily="OpenSansSemibold" TextColor="#1B2A4A" />
 
-                            <!--  Status Badge  -->
-                            <Label
-                                Grid.Row="2"
-                                Text="{Binding StatusLabel}"
-                                FontSize="12"
-                                FontAttributes="Bold"
-                                TextColor="{Binding StatusColor}" />
+                            <Label Grid.Row="2" Text="{Binding StatusLabel}" FontSize="12"
+                                   FontAttributes="Bold" TextColor="{Binding StatusColor}" />
 
-                            <!--  Description  -->
-                            <Label
-                                Grid.Row="3"
-                                Text="{Binding Description}"
-                                FontSize="13"
-                                TextColor="#5C6B8A"
-                                LineBreakMode="TailTruncation"
-                                MaxLines="2" />
+                            <Label Grid.Row="3" Text="{Binding Description}" FontSize="13"
+                                   TextColor="#5C6B8A" LineBreakMode="TailTruncation" MaxLines="2" />
 
-                            <!--  Progress Bar  -->
-                            <Grid
-                                Grid.Row="4"
-                                RowDefinitions="Auto,Auto"
-                                RowSpacing="4">
-
+                            <Grid Grid.Row="4" RowDefinitions="Auto,Auto" RowSpacing="4">
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <Label
-                                        Text="Progress"
-                                        FontSize="11"
-                                        TextColor="#5C6B8A" />
-                                    <Label
-                                        Grid.Column="1"
-                                        Text="{Binding Progress, StringFormat='{0:P0}'}"
-                                        FontSize="11"
-                                        FontAttributes="Bold"
-                                        TextColor="#1B2A4A" />
+                                    <Label Text="Progress" FontSize="11" TextColor="#5C6B8A" />
+                                    <Label Grid.Column="1" Text="{Binding Progress, StringFormat='{0:P0}'}"
+                                           FontSize="11" FontAttributes="Bold" TextColor="#1B2A4A" />
                                 </Grid>
-
-                                <ProgressBar
-                                    Grid.Row="1"
-                                    Progress="{Binding Progress}"
-                                    ProgressColor="#C9A84C"
-                                    BackgroundColor="#EDE8DC" />
-
+                                <ProgressBar Grid.Row="1" Progress="{Binding Progress}"
+                                             ProgressColor="#C9A84C" BackgroundColor="#EDE8DC" />
                             </Grid>
+
+                            <!--  Delete Button - only for local assignments  -->
+                            <Button
+                                Grid.Row="5"
+                                IsVisible="{Binding IsLocal}"
+                                BackgroundColor="#922B21"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:MainPageViewModel}}, Path=DeleteAssignmentCommand}"
+                                CommandParameter="{Binding .}"
+                                CornerRadius="8"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                HeightRequest="38"
+                                Text="Delete"
+                                TextColor="#FFFFFF" />
 
                         </Grid>
                     </Border>
@@ -195,20 +126,9 @@
         </CollectionView>
 
         <!--  Loading Spinner  -->
-        <Grid
-            Grid.RowSpan="3"
-            HorizontalOptions="Fill"
-            IsVisible="{Binding IsBusy}"
-            VerticalOptions="Fill">
-            <BoxView
-                BackgroundColor="#F5F0E8"
-                HorizontalOptions="Fill"
-                Opacity="0.7"
-                VerticalOptions="Fill" />
-            <ActivityIndicator
-                IsRunning="True"
-                Color="#C9A84C"
-                WidthRequest="60" />
+        <Grid Grid.RowSpan="3" HorizontalOptions="Fill" IsVisible="{Binding IsBusy}" VerticalOptions="Fill">
+            <BoxView BackgroundColor="#F5F0E8" HorizontalOptions="Fill" Opacity="0.7" VerticalOptions="Fill" />
+            <ActivityIndicator IsRunning="True" Color="#C9A84C" WidthRequest="60" />
         </Grid>
 
     </Grid>

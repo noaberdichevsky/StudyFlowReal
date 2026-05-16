@@ -35,6 +35,7 @@ namespace StudyFlow.Model
 
         // The list of subtasks for this assignment
         public List<SubTask> Subtasks { get; set; } = new();
+        public bool IsLocal { get; set; } = false;
 
         // Calculates the progress percentage based on completed subtasks
         // Returns a value between 0 and 1 (e.g. 0.5 = 50%)

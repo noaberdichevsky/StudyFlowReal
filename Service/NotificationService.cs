@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using StudyFlow.Model;
+﻿using StudyFlow.Model;
 
 namespace StudyFlow.Service
 {
     public class NotificationService
     {
+        private static HashSet<string> _shownNotifications = new();
+
         public static void ScheduleReminders(List<CourseAssignment> assignments)
         {
             foreach (var assignment in assignments)
@@ -34,6 +31,10 @@ namespace StudyFlow.Service
 
         private static void ShowAlert(string title, string message)
         {
+            var key = title + message;
+            if (_shownNotifications.Contains(key)) return;
+            _shownNotifications.Add(key);
+
             MainThread.BeginInvokeOnMainThread(async () =>
             {
                 var page = Application.Current?.Windows[0]?.Page;

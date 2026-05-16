@@ -52,6 +52,7 @@ namespace StudyFlow
             builder.Services.AddTransient<AdminView>();
             builder.Services.AddTransient<UsersListView>();
             builder.Services.AddTransient<AssignmentDetailView>();
+            builder.Services.AddTransient<AddAssignmentView>();
             return builder;
         }
 
@@ -67,6 +68,7 @@ namespace StudyFlow
             builder.Services.AddTransient<AdminViewModel>();
             builder.Services.AddTransient<UsersListViewModel>();
             builder.Services.AddTransient<AssignmentDetailViewModel>();
+            builder.Services.AddTransient<AddAssignmentViewModel>();
             return builder;
         }
 
@@ -81,11 +83,11 @@ namespace StudyFlow
             // Transient because each repository operation is independent
             builder.Services.AddTransient<IAppUserRepository, FireBaseUserRepository>();
             // Register classroom service - swap to GoogleClassroomService later
-            builder.Services.AddTransient<IClassRooomService, GoogleClassroomService>();
+            builder.Services.AddSingleton<IClassRooomService, GoogleClassroomService>();
             // Register subtask generator service
             builder.Services.AddSingleton<SubtaskGeneratorService>();
             // Register progress repository
-            builder.Services.AddTransient<IProgressRepository, FireBaseProgressRepository>();
+            builder.Services.AddSingleton<IProgressRepository, FireBaseProgressRepository>();
 #if ANDROID
             builder.Services.AddSingleton<IGoogleAuthService, StudyFlow.GoogleAuthService>();
 #endif

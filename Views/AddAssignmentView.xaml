@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StudyFlow.Views.AddAssignmentView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    x:DataType="vm:AddAssignmentViewModel"
+    BackgroundColor="#F5F0E8"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!--  Header  -->
+        <Grid Grid.Row="0" Padding="20,50,20,20" BackgroundColor="#1B2A4A">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button BackgroundColor="Transparent" Command="{Binding GoBackCommand}"
+                        FontFamily="MaterialIcons" FontSize="24" Text="&#xe5c4;" TextColor="#F5F0E8" />
+                <Label Grid.Column="1" Text="Add Assignment" FontSize="20" FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold" TextColor="#F5F0E8" VerticalOptions="Center" Margin="10,0,0,0" />
+            </Grid>
+        </Grid>
+
+        <!--  Form  -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <!--  Title  -->
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Title" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Entry Placeholder="e.g. Math Homework" Text="{Binding Title}"
+                               FontSize="14" TextColor="#1B2A4A" BackgroundColor="Transparent" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Subject  -->
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Subject" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Entry Placeholder="e.g. Mathematics" Text="{Binding Subject}"
+                               FontSize="14" TextColor="#1B2A4A" BackgroundColor="Transparent" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Description  -->
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Description" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Editor Placeholder="Describe the assignment..." Text="{Binding Description}"
+                                FontSize="14" TextColor="#1B2A4A" BackgroundColor="Transparent"
+                                AutoSize="TextChanges" MinimumHeightRequest="80" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Deadline  -->
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Deadline" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <DatePicker Date="{Binding Deadline}" Format="dd/MM/yyyy"
+                                    TextColor="#1B2A4A" BackgroundColor="Transparent" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Save Button  -->
+                <Button BackgroundColor="#1B2A4A" Command="{Binding SaveCommand}"
+                        CornerRadius="12" FontSize="16" FontAttributes="Bold"
+                        HeightRequest="50" Text="Save Assignment" TextColor="#F5F0E8"
+                        Margin="0,10,0,0" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>
