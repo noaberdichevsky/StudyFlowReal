@@ -36,9 +36,14 @@ namespace StudyFlow.ViewModels
         [ObservableProperty]
         private string _newSubtaskTitle = string.Empty;
 
+        [ObservableProperty]
+        private string _localScore = string.Empty;
+
         public string ScoreDisplay => CurrentAssignment?.Score > 0
             ? CurrentAssignment.Score.ToString("F0")
             : "Not graded yet";
+
+        public bool IsLocalAssignment => CurrentAssignment?.IsLocal ?? false;
 
         public AssignmentDetailViewModel(
             IClassRooomService classroomService,
@@ -59,6 +64,10 @@ namespace StudyFlow.ViewModels
 
             CurrentAssignment = found;
             OnPropertyChanged(nameof(ScoreDisplay));
+            OnPropertyChanged(nameof(IsLocalAssignment));
+
+            if (CurrentAssignment?.IsLocal == true)
+                LocalScore = CurrentAssignment.Score > 0 ? CurrentAssignment.Score.ToString("F0") : string.Empty;
 
             var savedProgress = await _progressRepository
                 .LoadProgressAsync(_userId, id);
@@ -101,6 +110,24 @@ namespace StudyFlow.ViewModels
                 _userId,
                 _assignmentId,
                 SubtaskList);
+        }
+
+        [RelayCommand]
+        private async Task SaveScore()
+        {
+            if (CurrentAssignment is null) return;
+
+            if (double.TryParse(LocalScore, out var score))
+            {
+                CurrentAssignment.Score = score;
+                await LocalAssignmentService.UpdateAssignment(CurrentAssignment);
+                OnPropertyChanged(nameof(ScoreDisplay));
+                await Application.Current!.MainPage!.DisplayAlert("Saved", "Score saved!", "OK");
+            }
+            else
+            {
+                await Application.Current!.MainPage!.DisplayAlert("Error", "Please enter a valid number!", "OK");
+            }
         }
 
         [RelayCommand]

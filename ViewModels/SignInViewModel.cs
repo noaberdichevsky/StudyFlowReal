@@ -112,6 +112,8 @@ namespace StudyFlow.ViewModels
                 if (!string.IsNullOrEmpty(token))
                 {
                     await SecureStorage.Default.SetAsync("google_access_token", token);
+                    if (IsRememberMeChecked)
+                        await SecureStorage.Default.SetAsync("remember_google", "true");
 
                     using var client = new HttpClient();
                     client.DefaultRequestHeaders.Authorization =
@@ -195,18 +197,19 @@ namespace StudyFlow.ViewModels
 
         public async void OnAppearing()
         {
-            string? token = await SecureStorage.Default.GetAsync("current_user_object");
-            if (!string.IsNullOrEmpty(token))
+            // בדוק Remember Me רגיל
+            string? userId = await SecureStorage.Default.GetAsync("current_user_object");
+            if (!string.IsNullOrEmpty(userId))
             {
                 try
                 {
                     IsBusy = true;
-                    var user = await _dbService.GetUserByIdAsync(token);
+                    var user = await _dbService.GetUserByIdAsync(userId);
                     (App.Current as App)!.CurrentUser = user;
                     IsBusy = false;
-
                     var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
                     Application.Current!.Windows[0].Page = mainPage;
+                    return;
                 }
                 catch (Exception ex)
                 {
@@ -214,6 +217,19 @@ namespace StudyFlow.ViewModels
                     ShowErrorMessage(ex.Message);
                 }
             }
+
+            // בדוק Remember Me של Google
+            string? rememberGoogle = await SecureStorage.Default.GetAsync("remember_google");
+            string? googleToken = await SecureStorage.Default.GetAsync("google_access_token");
+            if (rememberGoogle == "true" && !string.IsNullOrEmpty(googleToken))
+            {
+                var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
+                Application.Current!.Windows[0].Page = mainPage;
+                return;
+            }
+
+            // אם לא Remember Me — מחק את הטוקן
+            SecureStorage.Default.Remove("google_access_token");
         }
     }
 }

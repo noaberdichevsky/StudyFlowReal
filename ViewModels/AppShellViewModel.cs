@@ -28,6 +28,7 @@ namespace StudyFlow.ViewModels
         {
             SecureStorage.Default.Remove("current_user_object");
             SecureStorage.Default.Remove("google_access_token");
+            SecureStorage.Default.Remove("remember_google");
             (App.Current as App)!.CurrentUser = null;
             var signInView = IPlatformApplication.Current!.Services.GetService<Views.SignInView>();
             Application.Current!.Windows[0].Page = new NavigationPage(signInView);

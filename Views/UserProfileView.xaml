@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StudyFlow.Views.UserProfileView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    x:DataType="vm:UserProfileViewModel"
+    BackgroundColor="#F5F0E8"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid RowDefinitions="Auto,*">
+
+        <Grid Grid.Row="0" Padding="20,50,20,20" BackgroundColor="#1B2A4A">
+            <Grid ColumnDefinitions="Auto,*">
+                <Button BackgroundColor="Transparent" Command="{Binding GoBackCommand}"
+                        FontFamily="MaterialIcons" FontSize="24" Text="&#xe5c4;" TextColor="#F5F0E8"
+                        VerticalOptions="Center" />
+                <Label Grid.Column="1" Text="User Profile" FontSize="20" FontAttributes="Bold"
+                       FontFamily="OpenSansSemibold" TextColor="#F5F0E8" VerticalOptions="Center"
+                       Margin="10,0,0,0" />
+            </Grid>
+        </Grid>
+
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20" Spacing="15">
+
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Full Name" FontSize="11" TextColor="#5C6B8A" />
+                        <Label Text="{Binding FullName}" FontSize="16" FontAttributes="Bold" TextColor="#1B2A4A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Email" FontSize="11" TextColor="#5C6B8A" />
+                        <Label Text="{Binding User.UserEmail}" FontSize="16" TextColor="#1B2A4A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Phone" FontSize="11" TextColor="#5C6B8A" />
+                        <Label Text="{Binding User.UserMobile}" FontSize="16" TextColor="#1B2A4A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Registration Date" FontSize="11" TextColor="#5C6B8A" />
+                        <Label Text="{Binding User.RegDate}" FontSize="16" TextColor="#1B2A4A" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
+                    <VerticalStackLayout Spacing="5">
+                        <Label Text="Role" FontSize="11" TextColor="#5C6B8A" />
+                        <Label Text="{Binding RoleLabel}" FontSize="16" FontAttributes="Bold"
+                               TextColor="{Binding RoleColor}" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <Button BackgroundColor="#C9A84C" Command="{Binding MakeAdminCommand}"
+                        CornerRadius="8" FontSize="14" FontAttributes="Bold"
+                        HeightRequest="50" Text="Make Admin" TextColor="#1B2A4A" />
+
+                <Button BackgroundColor="#922B21" Command="{Binding DeleteUserCommand}"
+                        CornerRadius="8" FontSize="14" FontAttributes="Bold"
+                        HeightRequest="50" Text="Delete User" TextColor="#FFFFFF" />
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+    </Grid>
+</ContentPage>

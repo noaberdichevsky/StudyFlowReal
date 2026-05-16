@@ -13,6 +13,7 @@ namespace StudyFlow
             Routing.RegisterRoute("UsersListView", typeof(Views.UsersListView));
             Routing.RegisterRoute("AssignmentDetailView", typeof(Views.AssignmentDetailView));
             Routing.RegisterRoute("AddAssignmentView", typeof(Views.AddAssignmentView));
+            Routing.RegisterRoute("UserProfileView", typeof(Views.UserProfileView));
 
             // Hide admin tab for regular users
             var currentUser = (App.Current as App)?.CurrentUser;

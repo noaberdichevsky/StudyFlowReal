@@ -12,41 +12,17 @@
     <Grid RowDefinitions="Auto,*">
 
         <!--  Header  -->
-        <Grid
-            Grid.Row="0"
-            Padding="20,50,20,20"
-            BackgroundColor="#1B2A4A">
+        <Grid Grid.Row="0" Padding="20,50,20,20" BackgroundColor="#1B2A4A">
             <Grid ColumnDefinitions="Auto,*">
-
-                <!--  Back Button  -->
-                <Button
-                    BackgroundColor="Transparent"
-                    Command="{Binding GoBackCommand}"
-                    FontFamily="MaterialIcons"
-                    FontSize="24"
-                    Text="&#xe5c4;"
-                    TextColor="#F5F0E8"
-                    VerticalOptions="Center" />
-
-                <!--  Title and Subject  -->
-                <VerticalStackLayout
-                    Grid.Column="1"
-                    Margin="10,0,0,0"
-                    VerticalOptions="Center">
-                    <Label
-                        Text="{Binding CurrentAssignment.Title}"
-                        FontSize="20"
-                        FontAttributes="Bold"
-                        FontFamily="OpenSansSemibold"
-                        TextColor="#F5F0E8"
-                        LineBreakMode="TailTruncation" />
-                    <Label
-                        Text="{Binding CurrentAssignment.Subject}"
-                        FontSize="13"
-                        TextColor="#C9A84C"
-                        FontFamily="OpenSansRegular" />
+                <Button BackgroundColor="Transparent" Command="{Binding GoBackCommand}"
+                        FontFamily="MaterialIcons" FontSize="24" Text="&#xe5c4;" TextColor="#F5F0E8"
+                        VerticalOptions="Center" />
+                <VerticalStackLayout Grid.Column="1" Margin="10,0,0,0" VerticalOptions="Center">
+                    <Label Text="{Binding CurrentAssignment.Title}" FontSize="20" FontAttributes="Bold"
+                           FontFamily="OpenSansSemibold" TextColor="#F5F0E8" LineBreakMode="TailTruncation" />
+                    <Label Text="{Binding CurrentAssignment.Subject}" FontSize="13"
+                           TextColor="#C9A84C" FontFamily="OpenSansRegular" />
                 </VerticalStackLayout>
-
             </Grid>
         </Grid>
 
@@ -56,215 +32,126 @@
 
                 <!--  Deadline and Score row  -->
                 <Grid ColumnDefinitions="*,*">
-
-                    <!--  Deadline  -->
-                    <Border
-                        Padding="15"
-                        BackgroundColor="#FFFFFF"
-                        Stroke="#C8C0B0"
-                        StrokeShape="RoundRectangle 12"
-                        StrokeThickness="1">
+                    <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                            StrokeShape="RoundRectangle 12" StrokeThickness="1">
                         <VerticalStackLayout>
-                            <Label
-                                Text="Deadline"
-                                FontSize="11"
-                                TextColor="#5C6B8A" />
-                            <Label
-                                Text="{Binding CurrentAssignment.Deadline}"
-                                FontSize="16"
-                                FontAttributes="Bold"
-                                TextColor="#1B2A4A" />
+                            <Label Text="Deadline" FontSize="11" TextColor="#5C6B8A" />
+                            <Label Text="{Binding CurrentAssignment.Deadline}" FontSize="16"
+                                   FontAttributes="Bold" TextColor="#1B2A4A" />
                         </VerticalStackLayout>
                     </Border>
 
-                    <!--  Score  -->
-                    <Border
-                        Grid.Column="1"
-                        Margin="10,0,0,0"
-                        Padding="15"
-                        BackgroundColor="#FFFFFF"
-                        Stroke="#C8C0B0"
-                        StrokeShape="RoundRectangle 12"
-                        StrokeThickness="1">
+                    <Border Grid.Column="1" Margin="10,0,0,0" Padding="15" BackgroundColor="#FFFFFF"
+                            Stroke="#C8C0B0" StrokeShape="RoundRectangle 12" StrokeThickness="1">
                         <VerticalStackLayout>
-                            <Label
-                                Text="Score"
-                                FontSize="11"
-                                TextColor="#5C6B8A" />
-                            <Label
-                                Text="{Binding ScoreDisplay}"
-                                FontSize="16"
-                                FontAttributes="Bold"
-                                TextColor="#1B2A4A" />
+                            <Label Text="Score" FontSize="11" TextColor="#5C6B8A" />
+                            <Label Text="{Binding ScoreDisplay}" FontSize="16"
+                                   FontAttributes="Bold" TextColor="#1B2A4A" />
                         </VerticalStackLayout>
                     </Border>
-
                 </Grid>
 
-                <!--  Progress Bar  -->
+                <!--  Add Score - only for local assignments  -->
                 <Border
                     Padding="15"
                     BackgroundColor="#FFFFFF"
                     Stroke="#C8C0B0"
                     StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                    StrokeThickness="1"
+                    IsVisible="{Binding IsLocalAssignment}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="Add Score" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Grid ColumnDefinitions="*,Auto">
+                            <Border Padding="10,5" Stroke="#C8C0B0" StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1" BackgroundColor="#F5F0E8">
+                                <Entry Placeholder="e.g. 85" PlaceholderColor="#9AA5B8"
+                                       Text="{Binding LocalScore}" Keyboard="Numeric"
+                                       FontSize="14" TextColor="#1B2A4A" BackgroundColor="Transparent" />
+                            </Border>
+                            <Button Grid.Column="1" Margin="8,0,0,0" BackgroundColor="#1B2A4A"
+                                    Command="{Binding SaveScoreCommand}" CornerRadius="8"
+                                    FontAttributes="Bold" FontSize="14" HeightRequest="45"
+                                    Text="Save" TextColor="#F5F0E8" WidthRequest="70" />
+                        </Grid>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!--  Progress Bar  -->
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
                     <VerticalStackLayout Spacing="8">
                         <Grid ColumnDefinitions="*,Auto">
-                            <Label
-                                Text="Progress"
-                                FontSize="14"
-                                FontAttributes="Bold"
-                                TextColor="#1B2A4A" />
-                            <Label
-                                Grid.Column="1"
-                                Text="{Binding CompletionProgress, StringFormat='{0:P0}'}"
-                                FontSize="14"
-                                FontAttributes="Bold"
-                                TextColor="#C9A84C" />
+                            <Label Text="Progress" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                            <Label Grid.Column="1" Text="{Binding CompletionProgress, StringFormat='{0:P0}'}"
+                                   FontSize="14" FontAttributes="Bold" TextColor="#C9A84C" />
                         </Grid>
-                        <ProgressBar
-                            Progress="{Binding CompletionProgress}"
-                            ProgressColor="#C9A84C"
-                            BackgroundColor="#EDE8DC" />
+                        <ProgressBar Progress="{Binding CompletionProgress}"
+                                     ProgressColor="#C9A84C" BackgroundColor="#EDE8DC" />
                     </VerticalStackLayout>
                 </Border>
 
                 <!--  Description  -->
-                <Border
-                    Padding="15"
-                    BackgroundColor="#FFFFFF"
-                    Stroke="#C8C0B0"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
                     <VerticalStackLayout Spacing="8">
-                        <Label
-                            Text="Description"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            TextColor="#1B2A4A" />
-                        <Label
-                            Text="{Binding CurrentAssignment.Description}"
-                            FontSize="14"
-                            TextColor="#5C6B8A"
-                            LineBreakMode="WordWrap" />
+                        <Label Text="Description" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Label Text="{Binding CurrentAssignment.Description}" FontSize="14"
+                               TextColor="#5C6B8A" LineBreakMode="WordWrap" />
                     </VerticalStackLayout>
                 </Border>
 
                 <!--  Guidance  -->
-                <Border
-                    Padding="15"
-                    BackgroundColor="#FFFFFF"
-                    Stroke="#C8C0B0"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
                     <VerticalStackLayout Spacing="8">
-                        <Label
-                            Text="Guidance"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            TextColor="#1B2A4A" />
-                        <Label
-                            Text="{Binding CurrentAssignment.Guidance}"
-                            FontSize="14"
-                            TextColor="#5C6B8A"
-                            LineBreakMode="WordWrap" />
+                        <Label Text="Guidance" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
+                        <Label Text="{Binding CurrentAssignment.Guidance}" FontSize="14"
+                               TextColor="#5C6B8A" LineBreakMode="WordWrap" />
                     </VerticalStackLayout>
                 </Border>
 
                 <!--  Subtasks  -->
-                <Border
-                    Padding="15"
-                    BackgroundColor="#FFFFFF"
-                    Stroke="#C8C0B0"
-                    StrokeShape="RoundRectangle 12"
-                    StrokeThickness="1">
+                <Border Padding="15" BackgroundColor="#FFFFFF" Stroke="#C8C0B0"
+                        StrokeShape="RoundRectangle 12" StrokeThickness="1">
                     <VerticalStackLayout Spacing="10">
 
-                        <Label
-                            Text="Subtasks"
-                            FontSize="14"
-                            FontAttributes="Bold"
-                            TextColor="#1B2A4A" />
+                        <Label Text="Subtasks" FontSize="14" FontAttributes="Bold" TextColor="#1B2A4A" />
 
-                        <!--  Subtasks list  -->
-                        <VerticalStackLayout
-                            BindableLayout.ItemsSource="{Binding SubtaskList}"
-                            Spacing="8">
+                        <VerticalStackLayout BindableLayout.ItemsSource="{Binding SubtaskList}" Spacing="8">
                             <BindableLayout.ItemTemplate>
                                 <DataTemplate x:DataType="models:SubTask">
                                     <Grid ColumnDefinitions="Auto,*">
-
-                                        <!--  Checkbox with TwoWay binding  -->
-                                        <CheckBox
-                                            IsChecked="{Binding IsCompleted, Mode=TwoWay}"
-                                            Color="#C9A84C"
-                                            VerticalOptions="Center" />
-
-                                        <!--  Subtask title  -->
-                                        <Label
-                                            Grid.Column="1"
-                                            Text="{Binding Title}"
-                                            FontSize="14"
-                                            TextColor="#1B2A4A"
-                                            VerticalOptions="Center">
+                                        <CheckBox IsChecked="{Binding IsCompleted, Mode=TwoWay}"
+                                                  Color="#C9A84C" VerticalOptions="Center" />
+                                        <Label Grid.Column="1" Text="{Binding Title}" FontSize="14"
+                                               TextColor="#1B2A4A" VerticalOptions="Center">
                                             <Label.Triggers>
-                                                <DataTrigger
-                                                    TargetType="Label"
-                                                    Binding="{Binding IsCompleted}"
-                                                    Value="True">
+                                                <DataTrigger TargetType="Label" Binding="{Binding IsCompleted}" Value="True">
                                                     <Setter Property="TextDecorations" Value="Strikethrough" />
                                                     <Setter Property="TextColor" Value="#9AA5B8" />
                                                 </DataTrigger>
                                             </Label.Triggers>
                                         </Label>
-
                                     </Grid>
                                 </DataTemplate>
                             </BindableLayout.ItemTemplate>
                         </VerticalStackLayout>
 
-                        <!--  Divider  -->
-                        <BoxView
-                            HeightRequest="1"
-                            BackgroundColor="#C8C0B0"
-                            Margin="0,5,0,5" />
+                        <BoxView HeightRequest="1" BackgroundColor="#C8C0B0" Margin="0,5,0,5" />
 
-                        <!--  Add custom subtask  -->
-                        <Label
-                            Text="Add your own step"
-                            FontSize="13"
-                            TextColor="#5C6B8A" />
+                        <Label Text="Add your own step" FontSize="13" TextColor="#5C6B8A" />
 
                         <Grid ColumnDefinitions="*,Auto">
-                            <!--  Input field  -->
-                            <Border
-                                Padding="10,5"
-                                Stroke="#C8C0B0"
-                                StrokeShape="RoundRectangle 8"
-                                StrokeThickness="1"
-                                BackgroundColor="#F5F0E8">
-                                <Entry
-                                    Placeholder="e.g. Ask teacher for help"
-                                    PlaceholderColor="#9AA5B8"
-                                    Text="{Binding NewSubtaskTitle}"
-                                    FontSize="14"
-                                    TextColor="#1B2A4A"
-                                    BackgroundColor="Transparent" />
+                            <Border Padding="10,5" Stroke="#C8C0B0" StrokeShape="RoundRectangle 8"
+                                    StrokeThickness="1" BackgroundColor="#F5F0E8">
+                                <Entry Placeholder="e.g. Ask teacher for help" PlaceholderColor="#9AA5B8"
+                                       Text="{Binding NewSubtaskTitle}" FontSize="14"
+                                       TextColor="#1B2A4A" BackgroundColor="Transparent" />
                             </Border>
-
-                            <!--  Add button  -->
-                            <Button
-                                Grid.Column="1"
-                                Margin="8,0,0,0"
-                                BackgroundColor="#C9A84C"
-                                Command="{Binding AddSubtaskCommand}"
-                                CornerRadius="8"
-                                FontAttributes="Bold"
-                                FontSize="14"
-                                HeightRequest="45"
-                                Text="Add"
-                                TextColor="#1B2A4A"
-                                WidthRequest="60" />
+                            <Button Grid.Column="1" Margin="8,0,0,0" BackgroundColor="#C9A84C"
+                                    Command="{Binding AddSubtaskCommand}" CornerRadius="8"
+                                    FontAttributes="Bold" FontSize="14" HeightRequest="45"
+                                    Text="Add" TextColor="#1B2A4A" WidthRequest="60" />
                         </Grid>
 
                     </VerticalStackLayout>

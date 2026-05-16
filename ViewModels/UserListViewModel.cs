@@ -79,7 +79,8 @@ namespace StudyFlow.ViewModels
         private async Task NavigateToAccountPage()
         {
             if (SelectedUser == null) return;
-            await Shell.Current.GoToAsync("AccountView");
+            await Shell.Current.GoToAsync($"UserProfileView?UserId={SelectedUser.Id}");
+            SelectedUser = null;
         }
         // Deletes a user from Firebase Auth and Realtime Database
         [RelayCommand]
@@ -139,5 +140,6 @@ namespace StudyFlow.ViewModels
                 System.Diagnostics.Debug.WriteLine($"MakeAdmin failed: {ex.Message}");
             }
         }
+
     }
 }

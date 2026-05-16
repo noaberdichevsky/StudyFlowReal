@@ -29,5 +29,12 @@ namespace StudyFlow.Service.ClassroomService
             _localAssignments.RemoveAll(a => a.Id == id);
             await _repo.DeleteAssignmentAsync(id);
         }
+        public static async Task UpdateAssignment(CourseAssignment assignment)
+        {
+            var index = _localAssignments.FindIndex(a => a.Id == assignment.Id);
+            if (index >= 0)
+                _localAssignments[index] = assignment;
+            await _repo.SaveAssignmentAsync(assignment);
+        }
     }
 }

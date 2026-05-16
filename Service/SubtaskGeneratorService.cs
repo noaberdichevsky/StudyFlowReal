@@ -4,7 +4,6 @@ namespace StudyFlow.Service
 {
     public class SubtaskGeneratorService
     {
-        // Generates subtasks with fixed IDs based on assignmentId
         public List<SubTask> GenerateSubtasks(CourseAssignment assignment, string assignmentId)
         {
             var subject = assignment.Subject.ToLower();
@@ -111,4 +110,4 @@ namespace StudyFlow.Service
             };
         }
     }
-}
+}   

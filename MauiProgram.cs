@@ -53,6 +53,7 @@ namespace StudyFlow
             builder.Services.AddTransient<UsersListView>();
             builder.Services.AddTransient<AssignmentDetailView>();
             builder.Services.AddTransient<AddAssignmentView>();
+            builder.Services.AddTransient<UserProfileView>();
             return builder;
         }
 
@@ -69,6 +70,7 @@ namespace StudyFlow
             builder.Services.AddTransient<UsersListViewModel>();
             builder.Services.AddTransient<AssignmentDetailViewModel>();
             builder.Services.AddTransient<AddAssignmentViewModel>();
+            builder.Services.AddTransient<UserProfileViewModel>();
             return builder;
         }
 
