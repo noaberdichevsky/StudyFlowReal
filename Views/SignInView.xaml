@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StudyFlow.Views.SignInView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    x:DataType="vm:SignInViewModel"
+    NavigationPage.HasNavigationBar="False">
+
+    <!--  Local styles for this page  -->
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FormBorder" TargetType="Border">
+                <Setter Property="Margin" Value="30,0,30,10" />
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="Stroke" Value="#C8C0B0" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="BackgroundColor" Value="#FFFFFF" />
+            </Style>
+            <Style x:Key="FormEntry" TargetType="Entry">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="#1B2A4A" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#C9A84C" />
+                <Setter Property="TextColor" Value="#1B2A4A" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="50" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!--  Deep navy gradient background  -->
+    <ContentPage.Background>
+        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+            <GradientStop Offset="0.0" Color="#1B2A4A" />
+            <GradientStop Offset="1.0" Color="#111D33" />
+        </LinearGradientBrush>
+    </ContentPage.Background>
+
+    <Grid>
+        <VerticalStackLayout
+            Padding="30"
+            Spacing="20"
+            VerticalOptions="Center">
+
+            <!--  App Title  -->
+            <Label
+                Text="StudyFlow"
+                FontSize="28"
+                FontAttributes="Bold"
+                FontFamily="OpenSansSemibold"
+                TextColor="#F5F0E8"
+                HorizontalOptions="Center"
+                Margin="0,0,0,10"/>
+
+            <!--  Subtitle  -->
+            <Label
+                FontSize="14"
+                HorizontalOptions="Center"
+                Text="Your Academic Companion"
+                TextColor="#C9A84C"
+                FontFamily="OpenSansRegular"
+                Margin="0,0,0,20"/>
+
+            <!--  Error Message  -->
+            <Label
+                FontSize="14"
+                HorizontalTextAlignment="Center"
+                IsVisible="{Binding SignInMessageVisible}"
+                Text="{Binding ErrorMessage}"
+                TextColor="#E74C3C" />
+
+            <!--  Email Entry  -->
+            <Border Style="{StaticResource FormBorder}">
+                <Entry
+                    Style="{StaticResource FormEntry}"
+                    Keyboard="Email"
+                    Placeholder="Email"
+                    PlaceholderColor="#9AA5B8"
+                    Text="{Binding UserEmail}" />
+            </Border>
+
+            <!--  Password Entry  -->
+            <Border Style="{StaticResource FormBorder}">
+                <Grid
+                    ColumnDefinitions="*,Auto"
+                    VerticalOptions="Center">
+                    <Entry
+                        Style="{StaticResource FormEntry}"
+                        IsPassword="{Binding EntryAsPassword}"
+                        Placeholder="Password"
+                        PlaceholderColor="#9AA5B8"
+                        Text="{Binding UserPassword}" />
+                    <Button
+                        Grid.Column="1"
+                        Padding="0"
+                        BackgroundColor="Transparent"
+                        Command="{Binding TogglePasswordCommand}"
+                        FontFamily="MaterialIcons"
+                        FontSize="22"
+                        Text="{Binding PasswordIconCode}"
+                        TextColor="#5C6B8A" />
+                </Grid>
+            </Border>
+
+            <!--  Sign In Button  -->
+            <Button
+                Style="{StaticResource PrimaryButton}"
+                Command="{Binding SignInCommand}"
+                Text="Sign In" />
+            <!--  Google Sign In Button  -->
+            <Button
+    Margin="0,0,0,0"
+    BackgroundColor="#FFFFFF"
+    Command="{Binding SignInWithGoogleCommand}"
+    CornerRadius="8"
+    HeightRequest="50"
+    Text="Sign in with Google"
+    TextColor="#1B2A4A"
+    FontAttributes="Bold"
+    FontSize="16" />
+
+            <!--  Remember Me  -->
+            <Grid ColumnDefinitions="Auto,*" Margin="30,0,30,0">
+                <CheckBox
+                    IsChecked="{Binding IsRememberMeChecked}"
+                    Color="#C9A84C" />
+                <Label
+                    Grid.Column="1"
+                    Text="Remember Me"
+                    TextColor="#C8C0B0"
+                    FontSize="14"
+                    VerticalOptions="Center" />
+            </Grid>
+
+            <!--  Navigate to Sign Up  -->
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label
+                    Text="Don't have an account?"
+                    TextColor="#C8C0B0"
+                    FontSize="14"
+                    VerticalTextAlignment="Center" />
+                <Button
+                    BackgroundColor="Transparent"
+                    Command="{Binding NavigateToSignUpCommand}"
+                    FontSize="14"
+                    Text="Sign Up"
+                    TextColor="#C9A84C" />
+            </HorizontalStackLayout>
+
+        </VerticalStackLayout>
+
+        <!--  Loading Spinner  -->
+        <Grid
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+            <BoxView
+                BackgroundColor="#1B2A4A"
+                HorizontalOptions="Fill"
+                Opacity="0.7"
+                VerticalOptions="Fill" />
+            <ActivityIndicator
+                IsRunning="True"
+                Color="#C9A84C"
+                WidthRequest="60" />
+        </Grid>
+
+    </Grid>
+</ContentPage>

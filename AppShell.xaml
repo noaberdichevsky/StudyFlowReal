@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="StudyFlow.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:StudyFlow.Views"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    Shell.NavBarIsVisible="True">
+
+    <!--  Custom nav bar with logout button  -->
+    <Shell.TitleView>
+        <Grid ColumnDefinitions="*,Auto">
+            <!--  App name  -->
+            <Label
+                Text="StudyFlow"
+                FontSize="20"
+                FontAttributes="Bold"
+                FontFamily="OpenSansSemibold"
+                TextColor="#F5F0E8"
+                VerticalOptions="Center" />
+
+            <!--  Logout button  -->
+            <Button
+                Grid.Column="1"
+                BackgroundColor="Transparent"
+                Command="{Binding SignOutCommand}"
+                FontFamily="MaterialIcons"
+                FontSize="24"
+                Text="&#xe9ba;"
+                TextColor="#C9A84C"
+                VerticalOptions="Center" />
+        </Grid>
+    </Shell.TitleView>
+
+    <TabBar>
+
+        <ShellContent
+            Title="Assignments"
+            ContentTemplate="{DataTemplate views:MainPageView}"
+            Route="MainPageView" />
+
+        <ShellContent
+            Title="Account"
+            ContentTemplate="{DataTemplate views:AccountView}"
+            Route="AccountView" />
+
+        <ShellContent
+            Title="Admin"
+            ContentTemplate="{DataTemplate views:AdminView}"
+            Route="AdminView" />
+
+    </TabBar>
+
+</Shell>

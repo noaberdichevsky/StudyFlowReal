@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StudyFlow.Views.AccountView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    x:DataType="vm:AccountViewModel"
+    BackgroundColor="#F5F0E8">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style x:Key="FormBorder" TargetType="Border">
+                <Setter Property="Margin" Value="30,0,30,10" />
+                <Setter Property="Padding" Value="10" />
+                <Setter Property="HeightRequest" Value="60" />
+                <Setter Property="Stroke" Value="#C8C0B0" />
+                <Setter Property="StrokeShape" Value="RoundRectangle 8" />
+                <Setter Property="StrokeThickness" Value="1" />
+                <Setter Property="BackgroundColor" Value="#FFFFFF" />
+            </Style>
+            <Style x:Key="FormEntry" TargetType="Entry">
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="TextColor" Value="#1B2A4A" />
+                <Setter Property="BackgroundColor" Value="Transparent" />
+            </Style>
+            <Style x:Key="PrimaryButton" TargetType="Button">
+                <Setter Property="BackgroundColor" Value="#C9A84C" />
+                <Setter Property="TextColor" Value="#1B2A4A" />
+                <Setter Property="FontAttributes" Value="Bold" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="CornerRadius" Value="8" />
+                <Setter Property="HeightRequest" Value="50" />
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Spacing="0">
+
+                <!--  Header  -->
+                <Grid
+                    Padding="20,50,20,30"
+                    BackgroundColor="#1B2A4A">
+                    <VerticalStackLayout Spacing="5">
+                        <Label
+                            Text="My Profile"
+                            FontSize="26"
+                            FontAttributes="Bold"
+                            FontFamily="OpenSansSemibold"
+                            TextColor="#F5F0E8"
+                            HorizontalOptions="Center" />
+                        <Label
+                            Text="Manage your account"
+                            FontSize="13"
+                            TextColor="#C9A84C"
+                            FontFamily="OpenSansRegular"
+                            HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Grid>
+
+                <!--  Form Fields  -->
+                <VerticalStackLayout Padding="0,20,0,0" Spacing="5">
+
+                    <!--  First Name  -->
+                    <Label
+                        Text="First Name"
+                        FontSize="13"
+                        TextColor="#5C6B8A"
+                        Margin="30,0,30,5" />
+                    <Border Style="{StaticResource FormBorder}">
+                        <Entry
+                            Style="{StaticResource FormEntry}"
+                            Placeholder="First Name"
+                            PlaceholderColor="#9AA5B8"
+                            Text="{Binding FirstName}" />
+                    </Border>
+
+                    <!--  Last Name  -->
+                    <Label
+                        Text="Last Name"
+                        FontSize="13"
+                        TextColor="#5C6B8A"
+                        Margin="30,10,30,5" />
+                    <Border Style="{StaticResource FormBorder}">
+                        <Entry
+                            Style="{StaticResource FormEntry}"
+                            Placeholder="Last Name"
+                            PlaceholderColor="#9AA5B8"
+                            Text="{Binding LastName}" />
+                    </Border>
+
+                    <!--  Email - read only  -->
+                    <Label
+                        Text="Email (cannot be changed)"
+                        FontSize="13"
+                        TextColor="#5C6B8A"
+                        Margin="30,10,30,5" />
+                    <Border Style="{StaticResource FormBorder}">
+                        <Entry
+                            Style="{StaticResource FormEntry}"
+                            Placeholder="Email"
+                            IsEnabled="False"
+                            TextColor="#9AA5B8"
+                            Text="{Binding UserEmail}" />
+                    </Border>
+
+                    <!--  Mobile  -->
+                    <Label
+                        Text="Mobile"
+                        FontSize="13"
+                        TextColor="#5C6B8A"
+                        Margin="30,10,30,5" />
+                    <Border Style="{StaticResource FormBorder}">
+                        <Entry
+                            Style="{StaticResource FormEntry}"
+                            Keyboard="Telephone"
+                            Placeholder="Mobile"
+                            PlaceholderColor="#9AA5B8"
+                            Text="{Binding UserMobile}" />
+                    </Border>
+
+                    <!--  Error Message  -->
+                    <Label
+                        IsVisible="{Binding ErrorMessageIsVisible}"
+                        Text="{Binding ErrorMessage}"
+                        TextColor="#922B21"
+                        FontSize="13"
+                        Margin="30,5,30,0" />
+
+                    <!--  Update Button  -->
+                    <Button
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding UpdateCommand}"
+                        Text="Update Profile"
+                        Margin="30,20,30,20" />
+
+                    <!--  Sign Out and Delete on same row  -->
+                    <Grid
+                        ColumnDefinitions="*,*"
+                        Margin="30,0,30,30">
+
+                        <!--  Sign Out Button  -->
+                        <Button
+                            BackgroundColor="Transparent"
+                            Command="{Binding SignOutCommand}"
+                            Text="Sign Out"
+                            TextColor="#922B21"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            HorizontalOptions="Center" />
+
+                        <!--  Delete Account Button  -->
+                        <Button
+                            Grid.Column="1"
+                            BackgroundColor="#922B21"
+                            Command="{Binding DeleteAccountCommand}"
+                            Text="Delete Account"
+                            TextColor="#FFFFFF"
+                            FontSize="15"
+                            FontAttributes="Bold"
+                            CornerRadius="8"
+                            HorizontalOptions="Center" />
+
+                    </Grid>
+
+                </VerticalStackLayout>
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!--  Loading Spinner  -->
+        <Grid
+            HorizontalOptions="Fill"
+            IsVisible="{Binding IsBusy}"
+            VerticalOptions="Fill">
+            <BoxView
+                BackgroundColor="#F5F0E8"
+                HorizontalOptions="Fill"
+                Opacity="0.7"
+                VerticalOptions="Fill" />
+            <ActivityIndicator
+                IsRunning="True"
+                Color="#C9A84C"
+                WidthRequest="60" />
+        </Grid>
+
+    </Grid>
+</ContentPage>

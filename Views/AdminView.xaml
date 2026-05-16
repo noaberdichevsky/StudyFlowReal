@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="StudyFlow.Views.AdminView"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StudyFlow.ViewModels"
+    x:DataType="vm:AdminViewModel"
+    BackgroundColor="#F5F0E8">
+
+    <VerticalStackLayout Spacing="20" Padding="20">
+
+        <!--  Header  -->
+        <Label
+            Text="Admin Panel"
+            FontSize="28"
+            FontAttributes="Bold"
+            FontFamily="OpenSansSemibold"
+            TextColor="#1B2A4A"
+            HorizontalOptions="Center"
+            Margin="0,40,0,10"/>
+
+        <!--  Subtitle  -->
+        <Label
+            Text="Manage your application"
+            FontSize="14"
+            TextColor="#C9A84C"
+            HorizontalOptions="Center"
+            Margin="0,0,0,20"/>
+
+        <!--  Debug Mode Toggle  -->
+        <Border
+            Padding="20"
+            BackgroundColor="#FFFFFF"
+            Stroke="#C8C0B0"
+            StrokeShape="RoundRectangle 12"
+            StrokeThickness="1">
+            <Grid ColumnDefinitions="*,Auto">
+                <VerticalStackLayout>
+                    <Label
+                        Text="Debug Mode"
+                        FontSize="16"
+                        FontAttributes="Bold"
+                        TextColor="#1B2A4A" />
+                    <Label
+                        Text="Show debug information"
+                        FontSize="13"
+                        TextColor="#5C6B8A" />
+                </VerticalStackLayout>
+                <Switch
+                    Grid.Column="1"
+                    IsToggled="{Binding IsDebugMode}"
+                    OnColor="#C9A84C"
+                    VerticalOptions="Center" />
+            </Grid>
+        </Border>
+
+        <!--  View Users Button  -->
+        <Button
+            BackgroundColor="#1B2A4A"
+            Command="{Binding NavigateToUsersListViewCommand}"
+            CornerRadius="8"
+            FontSize="16"
+            FontAttributes="Bold"
+            HeightRequest="50"
+            Text="View All Users"
+            TextColor="#F5F0E8"
+            Margin="0,10,0,0"/>
+
+    </VerticalStackLayout>
+</ContentPage>

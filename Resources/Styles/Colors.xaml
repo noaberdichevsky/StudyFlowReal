@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--  PRIMARY COLORS - Deep Navy  -->
+    <Color x:Key="Primary">#1B2A4A</Color>
+    <!--  Deep navy blue - main brand color  -->
+
+    <Color x:Key="PrimaryDark">#111D33</Color>
+    <!--  Darker navy - for pressed states  -->
+
+    <Color x:Key="PrimaryLight">#2E4270</Color>
+    <!--  Lighter navy - for highlights  -->
+
+    <!--  ACCENT COLORS  -->
+    <Color x:Key="Gold">#C9A84C</Color>
+    <!--  Gold - for accents and buttons  -->
+
+    <Color x:Key="Burgundy">#6B2737</Color>
+    <!--  Burgundy - for secondary accents  -->
+
+    <!--  BACKGROUND COLORS  -->
+    <Color x:Key="Background">#F5F0E8</Color>
+    <!--  Warm cream - main background  -->
+
+    <Color x:Key="CardBackground">#FFFFFF</Color>
+    <!--  White - for cards  -->
+
+    <Color x:Key="Surface">#EDE8DC</Color>
+    <!--  Slightly darker cream - for surfaces  -->
+
+    <!--  TEXT COLORS  -->
+    <Color x:Key="TextPrimary">#1B2A4A</Color>
+    <!--  Navy - main text color  -->
+
+    <Color x:Key="TextSecondary">#5C6B8A</Color>
+    <!--  Muted navy - secondary text  -->
+
+    <Color x:Key="TextLight">#F5F0E8</Color>
+    <!--  Cream - text on dark backgrounds  -->
+
+    <!--  STATUS COLORS  -->
+    <Color x:Key="Success">#2D6A4F</Color>
+    <!--  Forest green - for completed items  -->
+
+    <Color x:Key="Warning">#C9A84C</Color>
+    <!--  Gold - for pending items  -->
+
+    <Color x:Key="Error">#922B21</Color>
+    <!--  Deep red - for errors  -->
+
+    <!--  BORDER  -->
+    <Color x:Key="Border">#C8C0B0</Color>
+    <!--  Warm gray - for borders  -->
+
+</ResourceDictionary>
