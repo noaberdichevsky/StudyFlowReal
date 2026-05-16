@@ -20,7 +20,7 @@ namespace StudyFlow.ViewModels
 
         // The list of assignments shown in the collection view
         [ObservableProperty]
-        private ObservableCollection<Assignment> _assignments = new();
+        private ObservableCollection<CourseAssignment> _assignments = new();
 
         // The average score displayed at the top of the page
         [ObservableProperty]
@@ -32,7 +32,7 @@ namespace StudyFlow.ViewModels
 
         // The currently selected assignment
         [ObservableProperty]
-        private Assignment? _selectedAssignment;
+        private CourseAssignment? _selectedAssignment;
 
         // Constructor - receives services via Dependency Injection
         public MainPageViewModel(
@@ -88,7 +88,7 @@ namespace StudyFlow.ViewModels
                 }
 
                 // Put in ObservableCollection so UI updates
-                Assignments = new ObservableCollection<Assignment>(assignments);
+                Assignments = new ObservableCollection<CourseAssignment>(assignments);
 
                 // Calculate average score
                 CalculateAverageScore();
@@ -121,7 +121,7 @@ namespace StudyFlow.ViewModels
         [RelayCommand]
         private async Task NavigateToDetail()
         {
-            if (SelectedAssignment == null) return;
+            if (SelectedAssignment is null) return;
 
             // Pass the assignment ID to the detail page
             await Shell.Current.GoToAsync(

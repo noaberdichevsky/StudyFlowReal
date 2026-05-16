@@ -33,7 +33,7 @@ namespace StudyFlow.ViewModels
 
         // The assignment being displayed
         [ObservableProperty]
-        private Assignment? _currentAssignment;
+        private CourseAssignment? _currentAssignment;
 
         // Progress percentage
         [ObservableProperty]

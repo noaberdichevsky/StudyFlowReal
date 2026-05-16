@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace StudyFlow.Model
 {
-    public class Assignment
+    public class CourseAssignment
     {
         // Unique ID for this assignment in Firebase
         public string Id { get; set; } = string.Empty;

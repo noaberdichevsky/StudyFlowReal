@@ -14,7 +14,7 @@ namespace StudyFlow.Service.ClassroomService
     public interface IClassRooomService
     {
         // Returns the current list of assignments
-        List<Assignment> GetAssignments();
+        List<CourseAssignment> GetAssignments();
 
         // Refreshes the assignments list
         // Called every time the main page loads

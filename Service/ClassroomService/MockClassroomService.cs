@@ -5,20 +5,20 @@ namespace StudyFlow.Service.ClassroomService
     public class MockClassroomService : IClassRooomService
     {
         private readonly SubtaskGeneratorService _subtaskGenerator;
-        private List<Assignment> _assignments = new();
+        private List<CourseAssignment> _assignments = new();
 
         public MockClassroomService(SubtaskGeneratorService subtaskGenerator)
         {
             _subtaskGenerator = subtaskGenerator;
         }
 
-        public List<Assignment> GetAssignments() => _assignments;
+        public List<CourseAssignment> GetAssignments() => _assignments;
 
         public Task RefreshAssignments()
         {
-            var rawAssignments = new List<Assignment>
+            var rawAssignments = new List<CourseAssignment>
             {
-                new Assignment
+                new CourseAssignment
                 {
                     Id = "1",
                     Title = "Math Final Project",
@@ -29,7 +29,7 @@ namespace StudyFlow.Service.ClassroomService
                     Score = 0,
                     Status = 1
                 },
-                new Assignment
+                new CourseAssignment
                 {
                     Id = "2",
                     Title = "English Essay",
@@ -40,7 +40,7 @@ namespace StudyFlow.Service.ClassroomService
                     Score = 85,
                     Status = 3
                 },
-                new Assignment
+                new CourseAssignment
                 {
                     Id = "3",
                     Title = "Science Lab Report",
@@ -51,7 +51,7 @@ namespace StudyFlow.Service.ClassroomService
                     Score = 0,
                     Status = 0
                 },
-                new Assignment
+                new CourseAssignment
                 {
                     Id = "4",
                     Title = "History Presentation",
@@ -73,6 +73,11 @@ namespace StudyFlow.Service.ClassroomService
 
             _assignments = rawAssignments;
             return Task.CompletedTask;
+        }
+
+        List<CourseAssignment> IClassRooomService.GetAssignments()
+        {
+            throw new NotImplementedException();
         }
     }
 }
