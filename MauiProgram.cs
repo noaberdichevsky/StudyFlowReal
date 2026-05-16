@@ -81,7 +81,7 @@ namespace StudyFlow
             // Transient because each repository operation is independent
             builder.Services.AddTransient<IAppUserRepository, FireBaseUserRepository>();
             // Register classroom service - swap to GoogleClassroomService later
-            builder.Services.AddSingleton<IClassRooomService, GoogleClassroomService>();
+            builder.Services.AddTransient<IClassRooomService, GoogleClassroomService>();
             // Register subtask generator service
             builder.Services.AddSingleton<SubtaskGeneratorService>();
             // Register progress repository

@@ -116,5 +116,28 @@ namespace StudyFlow.ViewModels
                 IsBusy = false;
             }
         }
+        [RelayCommand]
+        private async Task MakeAdmin(AppUser user)
+        {
+            bool confirm = await Application.Current!.MainPage!.DisplayAlert(
+                "Make Admin",
+                $"Make {user.FirstName} {user.LastName} an admin?",
+                "Yes",
+                "Cancel");
+            if (!confirm) return;
+
+            try
+            {
+                await _dbService.SetToAdmin(user.Id);
+                await Application.Current!.MainPage!.DisplayAlert(
+                    "Success",
+                    $"{user.FirstName} is now an Admin!",
+                    "OK");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"MakeAdmin failed: {ex.Message}");
+            }
+        }
     }
 }

@@ -26,17 +26,12 @@ namespace StudyFlow.ViewModels
         [RelayCommand]
         private async Task SignOut()
         {
-            // Remove saved userId from secure storage (clears RememberMe)
             SecureStorage.Default.Remove("current_user_object");
-
-            // Clear the current user from the App class
+            SecureStorage.Default.Remove("google_access_token");
             (App.Current as App)!.CurrentUser = null;
-
-            // Navigate back to Sign In page
             var signInView = IPlatformApplication.Current!.Services.GetService<Views.SignInView>();
             Application.Current!.Windows[0].Page = new NavigationPage(signInView);
         }
-
         [RelayCommand]
         private async Task NavigateToAccount()
         {

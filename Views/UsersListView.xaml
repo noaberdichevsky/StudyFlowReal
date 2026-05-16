@@ -10,139 +10,78 @@
 
     <Grid RowDefinitions="Auto,Auto,*">
 
-        <!--  Header  -->
-        <Grid
-            Grid.Row="0"
-            Padding="20,50,20,20"
-            BackgroundColor="#1B2A4A">
-            <Label
-                Text="Users List"
-                FontSize="26"
-                FontAttributes="Bold"
-                FontFamily="OpenSansSemibold"
-                TextColor="#F5F0E8"
-                HorizontalOptions="Center" />
+        <Grid Grid.Row="0" Padding="20,50,20,20" BackgroundColor="#1B2A4A">
+            <Label Text="Users List" FontSize="26" FontAttributes="Bold"
+                   FontFamily="OpenSansSemibold" TextColor="#F5F0E8" HorizontalOptions="Center" />
         </Grid>
 
-        <!--  Search Bar  -->
-        <SearchBar
-            Grid.Row="1"
-            Placeholder="Search users..."
-            Text="{Binding SearchText}"
-            Margin="15,10,15,5" />
+        <SearchBar Grid.Row="1" Placeholder="Search users..."
+                   Text="{Binding SearchText}" Margin="15,10,15,5" />
 
-        <!--  Users Collection View  -->
-        <CollectionView
-            Grid.Row="2"
-            ItemsSource="{Binding AllUsers}"
-            SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
-            SelectionChangedCommand="{Binding NavigateToAccountPageCommand}"
-            SelectionMode="Single">
+        <CollectionView Grid.Row="2" ItemsSource="{Binding AllUsers}"
+                        SelectedItem="{Binding SelectedUser, Mode=TwoWay}"
+                        SelectionChangedCommand="{Binding NavigateToAccountPageCommand}"
+                        SelectionMode="Single">
 
-            <!--  Show when no users found  -->
             <CollectionView.EmptyView>
-                <VerticalStackLayout
-                    HorizontalOptions="Center"
-                    VerticalOptions="Center"
-                    Padding="20">
-                    <Label
-                        Text="No users found!"
-                        FontSize="18"
-                        TextColor="#5C6B8A"
-                        HorizontalOptions="Center" />
+                <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="20">
+                    <Label Text="No users found!" FontSize="18" TextColor="#5C6B8A" HorizontalOptions="Center" />
                 </VerticalStackLayout>
             </CollectionView.EmptyView>
 
-            <!--  Each user card  -->
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:AppUser">
-                    <Border
-                        Margin="15,7"
-                        Padding="15"
-                        BackgroundColor="#FFFFFF"
-                        Stroke="#C8C0B0"
-                        StrokeShape="RoundRectangle 10"
-                        StrokeThickness="1">
+                    <Border Margin="15,7" Padding="15" BackgroundColor="#FFFFFF"
+                            Stroke="#C8C0B0" StrokeShape="RoundRectangle 10" StrokeThickness="1">
+                        <Grid RowDefinitions="Auto,Auto,Auto" RowSpacing="8">
 
-                        <Grid ColumnDefinitions="*,Auto,Auto" RowDefinitions="Auto,Auto" RowSpacing="5">
+                            <!--  Name and Delete  -->
+                            <Grid ColumnDefinitions="*,Auto">
+                                <HorizontalStackLayout>
+                                    <Label FontAttributes="Bold" FontSize="16" Text="{Binding FirstName}"
+                                           TextColor="#1B2A4A" VerticalOptions="Center" />
+                                    <Label Margin="5,0,0,0" FontAttributes="Bold" FontSize="16"
+                                           Text="{Binding LastName}" TextColor="#1B2A4A" VerticalOptions="Center" />
+                                </HorizontalStackLayout>
+                                <Button Grid.Column="1" BackgroundColor="Transparent"
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=DeleteUserCommand}"
+                                        CommandParameter="{Binding .}" FontFamily="MaterialIcons"
+                                        FontSize="24" Text="&#xe872;" TextColor="#922B21" VerticalOptions="Center" />
+                            </Grid>
 
-                            <!--  Full Name  -->
-                            <HorizontalStackLayout>
-                                <Label
-            FontAttributes="Bold"
-            FontSize="16"
-            Text="{Binding FirstName}"
-            TextColor="#1B2A4A"
-            VerticalOptions="Center" />
-                                <Label
-            Margin="5,0,0,0"
-            FontAttributes="Bold"
-            FontSize="16"
-            Text="{Binding LastName}"
-            TextColor="#1B2A4A"
-            VerticalOptions="Center" />
-                            </HorizontalStackLayout>
+                            <!--  Email and Date  -->
+                            <Grid Grid.Row="1" ColumnDefinitions="*,Auto">
+                                <Label FontSize="13" Text="{Binding UserEmail}"
+                                       TextColor="#5C6B8A" VerticalOptions="Center" />
+                                <Border Grid.Column="1" Padding="10,5" BackgroundColor="#F5F0E8"
+                                        Stroke="#C8C0B0" StrokeShape="RoundRectangle 15" VerticalOptions="Center">
+                                    <Label FontAttributes="Bold" FontSize="12" Text="{Binding RegDate}"
+                                           TextColor="#1B2A4A" VerticalOptions="Center" />
+                                </Border>
+                            </Grid>
 
-                            <!--  Email  -->
-                            <Label
-        Grid.Row="1"
-        FontSize="13"
-        Text="{Binding UserEmail}"
-        TextColor="#5C6B8A"
-        VerticalOptions="Center" />
-
-                            <!--  Registration Date  -->
-                            <Border
-        Grid.RowSpan="2"
-        Grid.Column="1"
-        Padding="10,5"
-        BackgroundColor="#F5F0E8"
-        Stroke="#C8C0B0"
-        StrokeShape="RoundRectangle 15"
-        VerticalOptions="Center">
-                                <Label
-            FontAttributes="Bold"
-            FontSize="12"
-            Text="{Binding RegDate}"
-            TextColor="#1B2A4A"
-            VerticalOptions="Center" />
-                            </Border>
-
-                            <!--  Delete Button  -->
+                            <!--  Make Admin Button  -->
                             <Button
-        Grid.RowSpan="2"
-        Grid.Column="2"
-        BackgroundColor="Transparent"
-        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=DeleteUserCommand}"
-        CommandParameter="{Binding .}"
-        FontFamily="MaterialIcons"
-        FontSize="24"
-        Text="&#xe872;"
-        TextColor="#922B21"
-        VerticalOptions="Center" />
+                                Grid.Row="2"
+                                BackgroundColor="#C9A84C"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:UsersListViewModel}}, Path=MakeAdminCommand}"
+                                CommandParameter="{Binding .}"
+                                CornerRadius="8"
+                                FontSize="13"
+                                FontAttributes="Bold"
+                                HeightRequest="38"
+                                Text="Make Admin"
+                                TextColor="#1B2A4A" />
 
                         </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
-
         </CollectionView>
 
-        <!--  Loading Spinner  -->
-        <Grid
-            Grid.RowSpan="3"
-            HorizontalOptions="Fill"
-            IsVisible="{Binding IsBusy}"
-            VerticalOptions="Fill">
-            <BoxView
-                BackgroundColor="#F5F0E8"
-                HorizontalOptions="Fill"
-                Opacity="0.7"
-                VerticalOptions="Fill" />
-            <ActivityIndicator
-                IsRunning="True"
-                Color="#C9A84C"
-                WidthRequest="60" />
+        <Grid Grid.RowSpan="3" HorizontalOptions="Fill" IsVisible="{Binding IsBusy}" VerticalOptions="Fill">
+            <BoxView BackgroundColor="#F5F0E8" HorizontalOptions="Fill" Opacity="0.7" VerticalOptions="Fill" />
+            <ActivityIndicator IsRunning="True" Color="#C9A84C" WidthRequest="60" />
         </Grid>
 
     </Grid>

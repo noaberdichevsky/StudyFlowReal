@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using StudyFlow.Model;
+using StudyFlow.Service;
 using StudyFlow.Service.ClassroomService;
 using StudyFlow.Service.DBService;
 using System.Collections.ObjectModel;
@@ -92,6 +93,8 @@ namespace StudyFlow.ViewModels
 
                 // Calculate average score
                 CalculateAverageScore();
+                NotificationService.ScheduleReminders(assignments.ToList());
+
             }
             catch (Exception ex)
             {
