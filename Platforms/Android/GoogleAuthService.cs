@@ -7,7 +7,6 @@ namespace StudyFlow
 {
     public class GoogleAuthService : IGoogleAuthService
     {
-        private static TaskCompletionSource<string>? _tcs;
         private static string _codeVerifier = string.Empty;
 
         private static string GenerateCodeVerifier()
@@ -25,30 +24,6 @@ namespace StudyFlow
                 .Replace("+", "-").Replace("/", "_").Replace("=", "");
         }
 
-        public static async void HandleCallback(string url)
-        {
-            System.Diagnostics.Debug.WriteLine($"Callback: {url}");
-            var uri = new System.Uri(url);
-            var query = uri.Query.TrimStart('?');
-            var parts = query.Split('&');
-            string? code = null;
-            foreach (var part in parts)
-            {
-                var kv = part.Split('=');
-                if (kv.Length == 2 && kv[0] == "code")
-                    code = System.Uri.UnescapeDataString(kv[1]);
-            }
-
-            if (string.IsNullOrEmpty(code))
-            {
-                _tcs?.TrySetResult(string.Empty);
-                return;
-            }
-
-            var token = await ExchangeCodeForToken(code);
-            _tcs?.TrySetResult(token);
-        }
-
         private static async Task<string> ExchangeCodeForToken(string code)
         {
             using var client = new HttpClient();
@@ -57,7 +32,7 @@ namespace StudyFlow
                 new KeyValuePair<string, string>("code", code),
                 new KeyValuePair<string, string>("client_id", "842354198030-9geod1hq8c9eq5kgnsdbc7kn6pnimain.apps.googleusercontent.com"),
                 new KeyValuePair<string, string>("client_secret", "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"),
-                new KeyValuePair<string, string>("redirect_uri", "https://noaberdichevsky.github.io/studyflow-auth/"),
+                new KeyValuePair<string, string>("redirect_uri", "https://noaberdichevsky.github.io/studyflow-auth/auth.html"),
                 new KeyValuePair<string, string>("grant_type", "authorization_code"),
                 new KeyValuePair<string, string>("code_verifier", _codeVerifier),
             });
@@ -75,15 +50,12 @@ namespace StudyFlow
 
         public async Task<string> SignInAsync()
         {
-            _tcs = new TaskCompletionSource<string>();
             _codeVerifier = GenerateCodeVerifier();
             var codeChallenge = GenerateCodeChallenge(_codeVerifier);
 
-            SecureStorage.Default.Remove("oauth_code");
-
             var url = "https://accounts.google.com/o/oauth2/v2/auth" +
                 "?client_id=842354198030-9geod1hq8c9eq5kgnsdbc7kn6pnimain.apps.googleusercontent.com" +
-                "&redirect_uri=https%3A%2F%2Fnoaberdichevsky.github.io%2Fstudyflow-auth%2F" +
+                "&redirect_uri=https%3A%2F%2Fnoaberdichevsky.github.io%2Fstudyflow-auth%2Fauth.html" +
                 "&response_type=code" +
                 "&scope=email%20profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.courses.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.coursework.me.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.coursework.students" +
                 "&code_challenge=" + codeChallenge +
@@ -98,13 +70,18 @@ namespace StudyFlow
             var timeout = Task.Delay(60000);
             while (!timeout.IsCompleted)
             {
-                await Task.Delay(500);
-                var code = await SecureStorage.Default.GetAsync("oauth_code");
-                if (!string.IsNullOrEmpty(code))
+                await Task.Delay(1000);
+                try
                 {
-                    SecureStorage.Default.Remove("oauth_code");
-                    return await ExchangeCodeForToken(code);
+                    var code = await SecureStorage.Default.GetAsync("oauth_code");
+                    System.Diagnostics.Debug.WriteLine($"SecureStorage code: '{code}'");
+                    if (!string.IsNullOrEmpty(code) && code.Length > 10)
+                    {
+                        SecureStorage.Default.Remove("oauth_code");
+                        return await ExchangeCodeForToken(code);
+                    }
                 }
+                catch { }
             }
 
             return string.Empty;
