@@ -50,6 +50,8 @@ namespace StudyFlow
 
         public async Task<string> SignInAsync()
         {
+            SecureStorage.Default.Remove("oauth_code");
+
             _codeVerifier = GenerateCodeVerifier();
             var codeChallenge = GenerateCodeChallenge(_codeVerifier);
 
@@ -57,7 +59,8 @@ namespace StudyFlow
                 "?client_id=842354198030-9geod1hq8c9eq5kgnsdbc7kn6pnimain.apps.googleusercontent.com" +
                 "&redirect_uri=https%3A%2F%2Fnoaberdichevsky.github.io%2Fstudyflow-auth%2Fauth.html" +
                 "&response_type=code" +
-                "&scope=email%20profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.courses.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.coursework.me.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.coursework.students" +
+                "&scope=email%20profile%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.courses.readonly%20https%3A%2F%2Fwww" +
+                ".googleapis.com%2Fauth%2Fclassroom.coursework.me.readonly%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fclassroom.coursework.students" +
                 "&code_challenge=" + codeChallenge +
                 "&code_challenge_method=S256" +
                 "&prompt=select_account";
@@ -67,7 +70,7 @@ namespace StudyFlow
             intent.AddFlags(ActivityFlags.NewTask);
             activity.StartActivity(intent);
 
-            var timeout = Task.Delay(60000);
+            var timeout = Task.Delay(180000);
             while (!timeout.IsCompleted)
             {
                 await Task.Delay(1000);
