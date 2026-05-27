@@ -5,48 +5,71 @@ namespace StudyFlow.Service.ClassroomService
 {
     public class LocalAssignmentService
     {
+        // רשימת המטלות הידניות בזיכרון — static כי משותפת לכל האפליקציה
         private static List<CourseAssignment> _localAssignments = new();
+
+        // החיבור ל-Firebase — static כי נוצר פעם אחת
+        // בעיה: שומר את userId של המשתמש הראשון ולא מתעדכן
         private static FireBaseLocalAssignmentRepository _repo = new();
-        //פונקציה סטטית קצרה שמחזירה את רשימת המטלות הידניות מהזיכרון.
+
+        // מחזיר את רשימת המטלות מהזיכרון
         public static List<CourseAssignment> GetAll() => _localAssignments;
-        //פונקציה סטטית אסינכרונית שטוענת את המטלות הידניות מ-Firebase לזיכרון.
+
+        // פונקציה חדשה — מאפסת את כל הנתונים ביציאה מהחשבון
+        public static void Clear()
+        {
+
+            // מאפסת את רשימת המטלות בלבד
+            _localAssignments = new List<CourseAssignment>();
+        }
+
+        // טוענת את המטלות מ-Firebase לזיכרון
         public static async Task LoadFromFirebase()
         {
-            //שולפת את כל המטלות הידניות מ-Firebase ושומרת אותן ברשימה בזיכרון.
+            // יוצרת _repo חדש עם המשתמש שכבר מחובר
+            _repo = new FireBaseLocalAssignmentRepository();
+            // שולפת את כל המטלות של המשתמש מ-Firebase
             _localAssignments = await _repo.LoadAssignmentsAsync();
-            //עוברת על כל המטלות שהגיעו מ-Firebase ומסמנת כל אחת כידנית עם IsLocal = true.
+
+            // מסמנת כל מטלה כידנית
             foreach (var assignment in _localAssignments)
                 assignment.IsLocal = true;
         }
-        //פונקציה סטטית אסינכרונית שמקבלת מטלה חדשה ומוסיפה אותה.
+
+        // מוסיפה מטלה חדשה לזיכרון ול-Firebase
         public static async Task Add(CourseAssignment assignment)
         {
-            //מסמנת את המטלה כידנית — כדי שניתן יהיה למחוק אותה בעתיד.
+            // מסמנת את המטלה כידנית
             assignment.IsLocal = true;
-            //מוסיפה את המטלה לרשימה בזיכרון מיידית — המשתמש רואה אותה על המסך מיד בלי לחכות לשמירה.
+
+            // מוסיפה לזיכרון מיידית — המשתמש רואה מיד
             _localAssignments.Add(assignment);
-            //שומרת את המטלה ב-Firebase לצמיתות — כדי שתישמר גם אחרי סגירת האפליקציה.
+
+            // שומרת ב-Firebase לצמיתות
             await _repo.SaveAssignmentAsync(assignment);
         }
-        //פונקציה סטטית אסינכרונית שמקבלת מזהה מטלה ומוחקת אותה.
+
+        // מוחקת מטלה מהזיכרון ומ-Firebase
         public static async Task Remove(string id)
         {
-            //מוחקת את המטלה מהרשימה בזיכרון מיידית — המשתמש רואה שהמטלה נעלמת מהמסך מיד.
-          //  RemoveAll מוחקת את כל הפריטים שמתאימים לתנאי — במקרה זה כל מטלה שה - Id שלה שווה ל - id שהתקבל.
-           _localAssignments.RemoveAll(a => a.Id == id);
-            //מוחקת את המטלה מ-Firebase לצמיתות — כדי שלא תחזור בפעם הבאה שהאפליקציה נפתחת.
+            // מוחקת מהזיכרון מיידית
+            _localAssignments.RemoveAll(a => a.Id == id);
+
+            // מוחקת מ-Firebase לצמיתות
             await _repo.DeleteAssignmentAsync(id);
         }
-        //פונקציה סטטית אסינכרונית שמקבלת מטלה מעודכנת ומחליפה את הישנה.
+
+        // מעדכנת מטלה קיימת בזיכרון ול-Firebase
         public static async Task UpdateAssignment(CourseAssignment assignment)
         {
-            //מחפשת את המיקום של המטלה ברשימה לפי ה-Id שלה — מחזירה מספר כמו 0, 1, 2... או 1- אם לא נמצאה.
+            // מוצאת את המיקום של המטלה ברשימה
             var index = _localAssignments.FindIndex(a => a.Id == assignment.Id);
-            //אם המטלה נמצאה — מחליפה אותה בגרסה המעודכנת בזיכרון מיידית.
-        //    index >= 0 בודקת שהמטלה אכן קיימת — כי FindIndex מחזיר 1 - אם לא נמצא.
+
+            // אם נמצאה — מחליפה אותה בגרסה המעודכנת
             if (index >= 0)
                 _localAssignments[index] = assignment;
-            //שומרת את המטלה המעודכנת ב-Firebase לצמיתות.
+
+            // שומרת את הגרסה המעודכנת ב-Firebase
             await _repo.SaveAssignmentAsync(assignment);
         }
     }

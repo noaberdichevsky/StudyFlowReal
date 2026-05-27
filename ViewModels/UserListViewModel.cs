@@ -106,7 +106,9 @@ namespace StudyFlow.ViewModels
             }
             catch (Exception ex)
             {
+                //מדפיסה את סיבת השגיאה לחלון ה-Output של Visual Studio — לצורכי דיבאג בלבד.
                 System.Diagnostics.Debug.WriteLine($"DeleteUser failed: {ex.Message}");
+                //מציגה הודעת שגיאה למשתמש — כותרת "Error", הודעה ברורה וכפתור סגירה.
                 await Application.Current!.MainPage!.DisplayAlert(
                     "Error",
                     "Could not delete user. Please try again.",
@@ -118,8 +120,10 @@ namespace StudyFlow.ViewModels
             }
         }
         [RelayCommand]
+        //פונקציה פרטית אסינכרונית שמקבלת משתמש והופכת אותו למנהל.
         private async Task MakeAdmin(AppUser user)
         {
+            //מציגה דיאלוג אישור עם שם המשתמש — מחזירה true אם לחץ "Yes" ו-false אם לחץ "Cancel".
             bool confirm = await Application.Current!.MainPage!.DisplayAlert(
                 "Make Admin",
                 $"Make {user.FirstName} {user.LastName} an admin?",
@@ -129,12 +133,15 @@ namespace StudyFlow.ViewModels
 
             try
             {
+                //מעדכנת את המשתמש ב-Firebase — מגדירה IsAdmin = true.
                 await _dbService.SetToAdmin(user.Id);
+                //מציגה הודעת הצלחה עם שם המשתמש.
                 await Application.Current!.MainPage!.DisplayAlert(
                     "Success",
                     $"{user.FirstName} is now an Admin!",
                     "OK");
             }
+            //אם קרתה שגיאה — מדפיסה אותה ללוג. 
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"MakeAdmin failed: {ex.Message}");

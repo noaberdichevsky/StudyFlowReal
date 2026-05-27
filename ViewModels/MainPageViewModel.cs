@@ -138,18 +138,22 @@ namespace StudyFlow.ViewModels
         [RelayCommand]
         private async Task DeleteAssignment(CourseAssignment assignment)
         {
+            //בודק אם המטלה היא לוקליצ אט לא
             var isLocal = LocalAssignmentService.GetAll().Any(a => a.Id == assignment.Id);
-
+            // אם לא
             if (!isLocal)
             {
+                //שולח הודעה שאי אפשר למחוק 
                 await Application.Current!.MainPage!.DisplayAlert(
                     "Cannot Delete",
                     "You can only delete assignments you added manually.",
                     "OK");
                 return;
             }
-
+            // אם כן אז מוחק אותה 
+            //מוחקת את המטלה מהזיכרון ומ-Firebase לצמיתות — פונה ל-LocalAssignmentService.
             await LocalAssignmentService.Remove(assignment.Id);
+            //מוחקת את המטלה מה-ObservableCollection — המסך מתעדכן אוטומטית ומציג את הרשימה בלי המטלה שנמחקה.
             Assignments.Remove(assignment);
         }
     }
