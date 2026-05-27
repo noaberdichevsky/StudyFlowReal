@@ -9,7 +9,8 @@ namespace StudyFlow.Service
 {
     public class LogService:IAppLogger
     {
-        public void LogDebug(string message) => Debug.WriteLine($"[DEBUG] {message}");
-        public void LogError(string message) => Debug.WriteLine($"[ERROR] {message}");
+        //מדפיסה הודעת דיבאג לחלון ה-Output של Visual Studio עם התג [DEBUG].
+        public void LogDebug(string message) => Debug.WriteLine($"[DEBUG] {message}");//פעולות רגילות דיבאג
+        public void LogError(string message) => Debug.WriteLine($"[ERROR] {message}");//כשיש שגיאה ארור
     }
 }

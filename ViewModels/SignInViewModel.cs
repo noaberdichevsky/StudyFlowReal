@@ -104,23 +104,30 @@ namespace StudyFlow.ViewModels
         [RelayCommand]
         private async Task SignInWithGoogle()
         {
+            //טעינת מסך 
             IsBusy = true;
             try
             {
+                //קורא לגוגל אאוט סרביס שפותח את קרום ומחכה לטוקן מגוגל 
                 var token = await _googleAuthService.SignInAsync();
+
                 System.Diagnostics.Debug.WriteLine($"Token: {token}");
+                //בודק שיתקבל טוקן תקין
                 if (!string.IsNullOrEmpty(token))
                 {
+                    //שומר טוקן באחסון מוצפן לשימוש עתידי
                     await SecureStorage.Default.SetAsync("google_access_token", token);
+                    //אם סימן לזכור אותו שומר גם את זה כדי שבפתיחה הבאה יפתח מסך ראשי
                     if (IsRememberMeChecked)
                         await SecureStorage.Default.SetAsync("remember_google", "true");
-
+                    //יוצר חיבור HTTP ומוסיף את הטוקן לכותרת הבקשה כדי שידע מי שואל 
                     using var client = new HttpClient();
                     client.DefaultRequestHeaders.Authorization =
                         new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
+                    //שולח בקשה לגוגל לקבלת פרטי המשתמש המחובר
                     var response = await client.GetStringAsync("https://www.googleapis.com/oauth2/v2/userinfo");
                     System.Diagnostics.Debug.WriteLine($"UserInfo: {response}");
-
+                    //חילוץ ]רטי המשתמש
                     var userInfo = System.Text.Json.JsonSerializer.Deserialize<System.Text.Json.JsonElement>(response);
                     var googleId = userInfo.GetProperty("id").GetString() ?? string.Empty;
                     var email = userInfo.GetProperty("email").GetString() ?? string.Empty;
@@ -130,13 +137,14 @@ namespace StudyFlow.ViewModels
                     // חפש משתמש קיים לפי Google ID
                     var allUsers = _dbService.GetAllAsync();
                     var existingUser = allUsers.FirstOrDefault(u => u.Id == googleId);
-
+                    //אם משתמש קיים טוענים אותו 
                     if (existingUser != null)
                     {
                         (App.Current as App)!.CurrentUser = existingUser;
                     }
                     else
                     {
+                        // אם לא יוצרים אובייקט חדש של משתמש 
                         var newUser = new StudyFlow.Model.AppUser
                         {
                             Id = googleId,
@@ -146,27 +154,28 @@ namespace StudyFlow.ViewModels
                             IsAdmin = false,
                             RegDate = DateTime.Now.ToString("dd/MM/yyyy")
                         };
-
+                        //ומשתמשים בו כמשתמש נוכחי בפייר בייס 
                         var firebaseClient = new Firebase.Database.FirebaseClient(
                             "https://studyflowdb-default-rtdb.europe-west1.firebasedatabase.app/");
                         await firebaseClient
-                            .Child("AppUsers")
+                            .Child("users")
                             .Child(newUser.Id)
                             .PutAsync(newUser);
 
                         (App.Current as App)!.CurrentUser = newUser;
                     }
-
+                    //עוברים למסך הראשי
                     var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
                     Application.Current!.Windows[0].Page = mainPage;
                 }
+                //לא התקבל טוקן
                 else
                 {
                     ShowErrorMessage("Google Sign In failed!");
                 }
 
                 IsBusy = false;
-            }
+            }//אם קרתה שגיאה 
             catch (Exception ex)
             {
                 IsBusy = false;
@@ -199,14 +208,17 @@ namespace StudyFlow.ViewModels
         {
             // בדוק Remember Me רגיל
             string? userId = await SecureStorage.Default.GetAsync("current_user_object");
+            //בודק אם קיים היוזר איי די מהריממבר 
             if (!string.IsNullOrEmpty(userId))
             {
                 try
                 {
+                    //טוענת את פרטי המשתמש מהפיירבייס לפי היוזר איי די השמור ומגדירה אותו כמשתמש נוכחי 
                     IsBusy = true;
                     var user = await _dbService.GetUserByIdAsync(userId);
                     (App.Current as App)!.CurrentUser = user;
                     IsBusy = false;
+                    //עברו למסך הראשי
                     var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();
                     Application.Current!.Windows[0].Page = mainPage;
                     return;
@@ -218,9 +230,10 @@ namespace StudyFlow.ViewModels
                 }
             }
 
-            // בדוק Remember Me של Google
+            // בודקת אם קיים טוקן גוגל שמור וסימון "זכור אותי" לגוגל.
             string? rememberGoogle = await SecureStorage.Default.GetAsync("remember_google");
             string? googleToken = await SecureStorage.Default.GetAsync("google_access_token");
+            //אם שניהם קיימים — עוברת ישירות למסך הראשי בלי כניסה מחדש.
             if (rememberGoogle == "true" && !string.IsNullOrEmpty(googleToken))
             {
                 var mainPage = IPlatformApplication.Current!.Services.GetService<AppShell>();

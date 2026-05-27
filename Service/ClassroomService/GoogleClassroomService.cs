@@ -13,6 +13,7 @@ namespace StudyFlow.Service.ClassroomService
         {
             _subtaskGenerator = subtaskGenerator;
         }
+        //פונקציה קצרה שמחזירה את רשימת המטלות השמורה בזיכרון.
 
         public List<CourseAssignment> GetAssignments() => _assignments;
 
@@ -20,30 +21,32 @@ namespace StudyFlow.Service.ClassroomService
         {
             try
             {
+                //טוענת קודם את המטלות הידניות מ-Firebase לזיכרון.
                 await LocalAssignmentService.LoadFromFirebase();
+                //בודקת אם קיים טוקן של גוגל. אם לא — מציגה רק מטלות ידניות ומפסיקה.
                 var token = await SecureStorage.Default.GetAsync("google_access_token");
                 if (string.IsNullOrEmpty(token))
                 {
                     _assignments = new List<CourseAssignment>(LocalAssignmentService.GetAll());
                     return;
                 }
-
+                //יוצרת חיבור HTTP ומוסיפה את הטוקן לכל בקשה.
                 using var client = new HttpClient();
                 client.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", token);
-
+                //שולפת את כל הקורסים הפעילים של התלמיד מ-Google Classroom.
                 var coursesResponse = await client.GetStringAsync(
                     "https://classroom.googleapis.com/v1/courses?courseStates=ACTIVE");
-
+                //ממירה את התשובה ל-JSON. אם אין קורסים — מציגה רק מטלות ידניות ומפסיקה.
                 var coursesDoc = JsonDocument.Parse(coursesResponse);
                 if (!coursesDoc.RootElement.TryGetProperty("courses", out var courses))
                 {
                     _assignments = new List<CourseAssignment>(LocalAssignmentService.GetAll());
                     return;
                 }
-
+                //יוצרת רשימה ריקה שתאסוף את כל המטלות.
                 var assignments = new List<CourseAssignment>();
-
+                //עוברת על כל קורס ושולפת את המזהה ושם הקורס.
                 foreach (var course in courses.EnumerateArray())
                 {
                     var courseId = course.GetProperty("id").GetString() ?? string.Empty;
@@ -51,13 +54,15 @@ namespace StudyFlow.Service.ClassroomService
 
                     try
                     {
+                        //שולפת את כל המטלות הפורסמות בקורס הנוכחי.
                         var worksResponse = await client.GetStringAsync(
                             $"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork?courseWorkStates=PUBLISHED");
 
                         var worksDoc = JsonDocument.Parse(worksResponse);
+                        //אם אין מטלות בקורס — מדלגת לקורס הבא.
                         if (!worksDoc.RootElement.TryGetProperty("courseWork", out var works))
                             continue;
-
+                        //עוברת על כל מטלה ויוצרת אובייקט CourseAssignment עם הפרטים שהגיעו מגוגל.
                         foreach (var work in works.EnumerateArray())
                         {
                             var assignment = new CourseAssignment
@@ -74,20 +79,24 @@ namespace StudyFlow.Service.ClassroomService
 
                             try
                             {
+                                //שולפת את הגשת התלמיד עבור המטלה הנוכחית.
                                 var submissionsResponse = await client.GetStringAsync(
                                     $"https://classroom.googleapis.com/v1/courses/{courseId}/courseWork/{assignment.Id}/studentSubmissions?userId=me");
 
                                 var submissionsDoc = JsonDocument.Parse(submissionsResponse);
+                               
                                 if (submissionsDoc.RootElement.TryGetProperty("studentSubmissions", out var submissions))
                                 {
                                     var submission = submissions.EnumerateArray().FirstOrDefault();
                                     if (submission.ValueKind != JsonValueKind.Undefined)
                                     {
+                                        // //אם יש ציון — שומרת אותו במטלה.
                                         if (submission.TryGetProperty("assignedGrade", out var grade))
                                             assignment.Score = grade.GetDouble();
 
                                         if (submission.TryGetProperty("state", out var state))
                                         {
+                                            //ממירה את סטטוס ההגשה של גוגל למספר:
                                             assignment.Status = state.GetString() switch
                                             {
                                                 "TURNED_IN" => 2,
@@ -103,7 +112,7 @@ namespace StudyFlow.Service.ClassroomService
                             {
                                 System.Diagnostics.Debug.WriteLine($"Submission error: {ex.Message}");
                             }
-
+                            //יוצרת תת-משימות אוטומטיות לפי המקצוע ומוסיפה את המטלה לרשימה.
                             assignment.Subtasks = _subtaskGenerator.GenerateSubtasks(assignment, assignment.Id);
                             assignments.Add(assignment);
                         }
@@ -128,11 +137,14 @@ namespace StudyFlow.Service.ClassroomService
 
         private string GetDeadline(JsonElement work)
         {
+            //בודקת אם למטלה יש תאריך הגשה — לא לכל מטלה יש דדליין, לכן משתמשים ב-TryGetProperty שלא קורס אם לא קיים.
             if (work.TryGetProperty("dueDate", out var dueDate))
             {
+                //שולפת את השנה, החודש והיום מה-JSON של גוגל — גוגל שולח את התאריך כשלושה מספרים נפרדים.
                 var year = dueDate.GetProperty("year").GetInt32();
                 var month = dueDate.GetProperty("month").GetInt32();
                 var day = dueDate.GetProperty("day").GetInt32();
+                //מחזירה את התאריך בפורמט dd/MM/yyyy — למשל 05/06/2026.
                 return $"{day:D2}/{month:D2}/{year}";
             }
             return string.Empty;
